@@ -65,5 +65,18 @@ public class LoginFrame extends JFrame {
 
 
     }
+    public void signUpUser(File accounts) {
+        try (FileWriter fileWriter = new FileWriter(accounts, true)) {
+            fileWriter.write(userName.getText() + " " + passwordField.getText() + " " + remindMe.isSelected() + " 0 0 0 0 0 " + "\n");
+            JFrame signUpMessage = new JFrame();
+            ImageIcon icon = new ImageIcon("pictures/logo.png");
+            JOptionPane.showMessageDialog(signUpMessage, "Successfully registered.", "", JOptionPane.INFORMATION_MESSAGE, icon);
+        } catch (Exception ex) {
+            System.out.println("No account found ! ");
+            ex.printStackTrace();
+        }
+
+    }
+
 
 }
