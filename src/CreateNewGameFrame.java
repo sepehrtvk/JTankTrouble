@@ -4,6 +4,8 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 
 public class CreateNewGameFrame extends JFrame {
     private JPanel settingPanel;
@@ -121,6 +123,15 @@ public class CreateNewGameFrame extends JFrame {
             writeToFile(data);
             dispose();
             new OnlineModeFrame();
+        }
+    }
+    public void writeToFile(String dataToWrite) {
+        File file = new File("Games.txt");
+        try (FileWriter fileWriter = new FileWriter(file, true)) {
+            fileWriter.write(dataToWrite + "\n");
+        } catch (Exception ex) {
+            System.out.println("No game found ! ");
+            ex.printStackTrace();
         }
     }
 
