@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class CreateNewGameFrame extends JFrame {
@@ -29,6 +30,7 @@ public class CreateNewGameFrame extends JFrame {
         setVisible(true);
 
     }
+
     public void initSettingPanel() {
 
         settingPanel = new JPanel();
@@ -43,7 +45,7 @@ public class CreateNewGameFrame extends JFrame {
         destructibleWallSlider = new JSlider(10, 100, 20);
         sliderAndIcon(tankHealthSlider, "pictures/tankHealth.png");
         sliderAndIcon(shotDamageSlider, "pictures/shotDamage.png");
-        sliderAndIcon(destructibleWallSlider,"pictures/DestructibleWall.png");
+        sliderAndIcon(destructibleWallSlider, "pictures/DestructibleWall.png");
 
         add(settingPanel);
         settingPanel.add(gameDetailsPanel, BorderLayout.CENTER);
@@ -65,6 +67,47 @@ public class CreateNewGameFrame extends JFrame {
         gameDetailsPanel.add(label);
         gameDetailsPanel.add(slider);
 
+
+    }
+
+    public void initNewGame() {
+
+        gameNameText = new JTextField("Name");
+        gameNameText.setBorder(new TitledBorder("Game Name : "));
+        settingPanel.add(gameNameText, BorderLayout.NORTH);
+
+        optionPanel = new JPanel();
+        optionPanel.setLayout(new GridLayout(2, 4));
+        optionPanel.setBackground(Color.WHITE);
+
+        gameMode = new JComboBox();
+        gameMode.addItem("SinglePlayer");
+        gameMode.addItem("MultiPlayer");
+
+
+        gameFinishMode = new JComboBox();
+        gameFinishMode.addItem("DeathMatch");
+        gameFinishMode.addItem("League");
+
+        playerNumber = new JComboBox();
+        playerNumber.addItem("2");
+        playerNumber.addItem("4");
+        playerNumber.addItem("6");
+        playerNumber.addItem("8");
+
+        okButton = new JButton("OK");
+        okButton.addActionListener(new OkButtonAction());
+
+        optionPanel.add(new JLabel("     Game Mode"));
+        optionPanel.add(new JLabel("      Finish Mode"));
+        optionPanel.add(new JLabel("   Player Number"));
+        optionPanel.add(new JLabel(""));
+        optionPanel.add(gameMode);
+        optionPanel.add(gameFinishMode);
+        optionPanel.add(playerNumber);
+        optionPanel.add(okButton);
+
+        settingPanel.add(optionPanel, BorderLayout.SOUTH);
 
     }
 
