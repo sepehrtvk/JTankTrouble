@@ -102,6 +102,44 @@ public class MainFrame extends JFrame {
 
         }
     }
+    class OfflineModeAction implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFrame dialogFrame = new JFrame("Change settings ");
+            dialogFrame.setResizable(false);
+            dialogFrame.setLayout(new FlowLayout());
+            dialogFrame.setBounds(700,450,300,85);
+            JLabel settingLabel = new JLabel("Do you want to play with current setting ?");
+            dialogFrame.add(settingLabel);
+
+            JButton yesButton = new JButton("Yes");
+            yesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialogFrame.dispose();
+                    new OfflineModeFrame("Choose Your Game Mode : ");
+                    //new Game starts here...
+                }
+            });
+
+            JButton noButton = new JButton("No");
+            noButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialogFrame.dispose();
+                    new SettingFrame();
+                }
+            });
+
+            dialogFrame.add(yesButton);
+            dialogFrame.add(noButton);
+            dialogFrame.setVisible(true);
+
+        }
+    }
+
 
 
 }
