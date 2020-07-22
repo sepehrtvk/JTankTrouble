@@ -28,5 +28,24 @@ public class CreateNewGameFrame extends JFrame {
         setVisible(true);
 
     }
+    public void initSettingPanel() {
+
+        settingPanel = new JPanel();
+        gameDetailsPanel = new JPanel();
+        gameDetailsPanel.setBackground(Color.white);
+        gameDetailsPanel.setLayout(new GridLayout(3, 2));
+        settingPanel.setBackground(Color.white);
+        settingPanel.setLayout(new BorderLayout());
+
+        tankHealthSlider = new JSlider(10, 100, 40);
+        shotDamageSlider = new JSlider(10, 100, 80);
+        destructibleWallSlider = new JSlider(10, 100, 20);
+        sliderAndIcon(tankHealthSlider, "pictures/tankHealth.png");
+        sliderAndIcon(shotDamageSlider, "pictures/shotDamage.png");
+        sliderAndIcon(destructibleWallSlider,"pictures/DestructibleWall.png");
+
+        add(settingPanel);
+        settingPanel.add(gameDetailsPanel, BorderLayout.CENTER);
+    }
 
 }
