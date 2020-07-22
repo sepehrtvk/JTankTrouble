@@ -77,6 +77,32 @@ public class LoginFrame extends JFrame {
         }
 
     }
+    public void signInUser() {
+        File accounts = new File("Accounts.txt");
+        try (Scanner scanner = new Scanner(new FileReader(accounts))) {
+            String account = "";
+            String inputs = "";
+            while (scanner.hasNext()) {
+                inputs = userName.getText() + " " + passwordField.getText();
+                Controller.userName = userName.getText();
+                account += scanner.next() + " ";
+            }
+            if (account.contains(inputs) && accounts.length() != 0) {
+                dispose();
+                JFrame signInMessage = new JFrame();
+                String str3 = "Welcome to J Tank Trouble game ! \nUser : " + userName.getText();
+                ImageIcon icon = new ImageIcon("pictures/logo.png");
+                JOptionPane.showMessageDialog(signInMessage, str3, "", JOptionPane.INFORMATION_MESSAGE, icon);
+                new MainFrame();
+            } else {
+                JFrame incorrectMessage = new JFrame();
+                JOptionPane.showMessageDialog(incorrectMessage, "Incorrect Username or Password ! \nPlease try again... ", "", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
 
 
 }
