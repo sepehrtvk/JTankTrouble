@@ -18,5 +18,24 @@ public class OnlineModeFrame extends JFrame {
         setVisible(true);
 
     }
+    public void initServerList() {
+        serverChoosePanel = new JPanel();
+        serverChoosePanel.setLayout(new FlowLayout());
+
+        serverBox = new JComboBox();
+        serverBox.addItem("Server 1");
+        serverBox.addItem("Server 2");
+        serverBox.addItem("Server 3");
+
+        playButton = new JButton("Play");
+        serverChoosePanel.add(serverBox);
+        serverChoosePanel.add(playButton);
+
+        createGame = new JButton("Create New Game");
+        createGame.addActionListener(new CreateNewGameAction());
+        serverChoosePanel.add(createGame);
+        add(serverChoosePanel, BorderLayout.NORTH);
+
+    }
 
 }
