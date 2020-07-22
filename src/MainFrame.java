@@ -74,6 +74,12 @@ public class MainFrame extends JFrame {
             new LoginFrame();
         }
     }
+    class SettingButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new SettingFrame();
+        }
+    }
 
 
 }
