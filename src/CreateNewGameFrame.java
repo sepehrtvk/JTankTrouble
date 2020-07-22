@@ -114,6 +114,7 @@ public class CreateNewGameFrame extends JFrame {
         settingPanel.add(optionPanel, BorderLayout.SOUTH);
 
     }
+
     class OkButtonAction implements ActionListener {
 
         @Override
@@ -125,6 +126,7 @@ public class CreateNewGameFrame extends JFrame {
             new OnlineModeFrame();
         }
     }
+
     public void writeToFile(String dataToWrite) {
         File file = new File("Games.txt");
         try (FileWriter fileWriter = new FileWriter(file, true)) {
