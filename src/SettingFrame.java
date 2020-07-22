@@ -120,6 +120,24 @@ public class SettingFrame extends JFrame {
         serverPanel.add(okButton, BorderLayout.EAST);
     }
 
+    public void sliderAndIcon(String iconName, int value) {
+
+        JSlider slider = new JSlider(10, 100, value);
+        slider.setMajorTickSpacing(10);
+        slider.setBackground(Color.darkGray);
+        slider.setBorder(new LineBorder(Color.GRAY, 2));
+        slider.setForeground(Color.WHITE);
+        slider.setOpaque(true);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+
+        ImageIcon icon = new ImageIcon(iconName);
+        JLabel label = new JLabel(icon);
+        gameDetailsPanel.add(label);
+        gameDetailsPanel.add(slider);
+
+    }
 
 
 
