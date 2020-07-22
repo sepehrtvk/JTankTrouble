@@ -60,7 +60,7 @@ public class LoginFrame extends JFrame {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-//        signUp.addActionListener(new SignUpAction());
+        signUp.addActionListener(new SignUpAction());
         signIn.addActionListener(new SignInAction());
 
 
@@ -107,6 +107,27 @@ public class LoginFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             signInUser();
+        }
+    }
+    class SignUpAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            File accounts = new File("Accounts.txt");
+            try (Scanner scanner = new Scanner(new FileReader(accounts))) {
+                String account = "";
+                while (scanner.hasNextLine()) {
+                    account = scanner.nextLine() + "\n";
+                }
+                if (account.contains(userName.getText())) {
+                    JFrame userFound = new JFrame();
+                    JOptionPane.showMessageDialog(userFound, "This User already exists ! ", "", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    signUpUser(accounts);
+                }
+
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
         }
     }
 
