@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class CreateNewGameFrame extends JFrame {
@@ -47,5 +48,25 @@ public class CreateNewGameFrame extends JFrame {
         add(settingPanel);
         settingPanel.add(gameDetailsPanel, BorderLayout.CENTER);
     }
+
+    public void sliderAndIcon(JSlider slider, String iconName) {
+
+        slider.setMajorTickSpacing(10);
+        slider.setBackground(Color.white);
+        slider.setBorder(new LineBorder(Color.GRAY, 2));
+        slider.setForeground(Color.darkGray);
+        slider.setOpaque(true);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+
+        ImageIcon icon = new ImageIcon(iconName);
+        JLabel label = new JLabel(icon);
+        gameDetailsPanel.add(label);
+        gameDetailsPanel.add(slider);
+
+
+    }
+
 
 }
