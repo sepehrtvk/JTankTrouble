@@ -80,6 +80,28 @@ public class MainFrame extends JFrame {
             new SettingFrame();
         }
     }
+    class MouseAction extends MouseAdapter {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            super.mouseEntered(e);
+            JButton jButton = (JButton) e.getComponent();
+            jButton.setBackground(Color.GREEN);
+            jButton.setOpaque(true);
+            repaint();
+            revalidate();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            super.mouseExited(e);
+            JButton jButton = (JButton) e.getComponent();
+            jButton.setBackground(Color.WHITE);
+            jButton.setOpaque(true);
+            repaint();
+            revalidate();
+
+        }
+    }
 
 
 }
