@@ -30,8 +30,22 @@ public class LoginFrame extends JFrame {
 
         initLoginFrame();
         initRemindMe();
-//        initInformationPanel();
+        initInformationPanel();
         setVisible(true);
+
+    }
+
+    public void initInformationPanel() {
+
+        informationPanel = new JPanel();
+        informationPanel.setOpaque(true);
+        informationPanel.setBorder(new LineBorder(Color.DARK_GRAY));
+        informationPanel.setLayout(new GridLayout(3, 1));
+        informationPanel.add(userName);
+        informationPanel.add(passwordField);
+        informationPanel.add(remindMe);
+
+        add(informationPanel, BorderLayout.CENTER);
 
     }
 
@@ -66,6 +80,7 @@ public class LoginFrame extends JFrame {
 
 
     }
+
     public void initRemindMe() {
         File accounts = new File("Accounts.txt");
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
