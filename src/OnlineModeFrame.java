@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
@@ -59,6 +60,32 @@ public class OnlineModeFrame extends JFrame {
             ex.printStackTrace();
         }
         add(gamesPanel, BorderLayout.CENTER);
+    }
+
+    public void showGames(JPanel panel, String gameName, String gameMode, String finishMode, String limitNumber, String connectedNumber, String tankHealth, String shotDamage, String wallHealth) {
+        JPanel newPanel = new JPanel();
+        newPanel.setLayout(new BorderLayout());
+        JCheckBox jCheckBox = new JCheckBox("Join");
+        JTextArea jTextArea = new JTextArea();
+        jTextArea.setLineWrap(true);
+        jTextArea.setEditable(false);
+        jTextArea.setFont(new Font("Arial", Font.CENTER_BASELINE, 13));
+        jTextArea.append("Game Name : " + gameName);
+        jTextArea.append("\nGame Mode : " + gameMode);
+        jTextArea.append("\nGame Finish Mode : " + finishMode);
+        jTextArea.append("\nLimit Number : " + limitNumber);
+        jTextArea.append("\nConnected Number : " + connectedNumber);
+        jTextArea.append("\nTank Health Amount : " + tankHealth);
+        jTextArea.append("\nShot Damage : " + shotDamage);
+        jTextArea.append("\nDestructible Walls Health : " + wallHealth);
+        jTextArea.setBackground(Color.YELLOW);
+        newPanel.add(jTextArea, BorderLayout.CENTER);
+        newPanel.add(jCheckBox, BorderLayout.EAST);
+        newPanel.setBackground(Color.yellow);
+        newPanel.setOpaque(true);
+        newPanel.setBorder(new LineBorder(Color.red, 2));
+        panel.add(newPanel);
+
     }
 
 
