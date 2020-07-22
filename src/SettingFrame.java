@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -102,6 +104,22 @@ public class SettingFrame extends JFrame {
         settingPanel.add(gameDetailsPanel, BorderLayout.NORTH);
         settingPanel.add(serverPanel, BorderLayout.CENTER);
     }
+    public void initServerPanel() {
+        JComboBox serverBox = new JComboBox();
+        serverBox.addItem("Server 1");
+        serverBox.addItem("Server 2");
+        serverBox.addItem("Server 3");
+        JButton okButton = new JButton(" OK ");
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        serverPanel.add(serverBox, BorderLayout.CENTER);
+        serverPanel.add(okButton, BorderLayout.EAST);
+    }
+
 
 
 
