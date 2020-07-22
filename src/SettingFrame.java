@@ -66,8 +66,23 @@ public class SettingFrame extends JFrame {
 
         add(userInformationPanel);
 
+    }
+    public void textAndLabel(String pngFile, String textField) {
+
+        ImageIcon icon = new ImageIcon(pngFile);
+        JLabel label = new JLabel(icon);
+        userInformationPanel.add(label);
+
+        JTextField text = new JTextField(textField);
+        text.setEditable(false);
+        text.setBackground(Color.darkGray);
+        text.setBorder(new LineBorder(Color.GRAY, 2));
+        text.setHorizontalAlignment(JTextField.CENTER);
+        text.setForeground(Color.WHITE);
+        userInformationPanel.add(text);
 
     }
+
 
 
 }
