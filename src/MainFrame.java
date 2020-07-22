@@ -33,10 +33,39 @@ public class MainFrame extends JFrame {
         items.setBackground(Color.WHITE);
         items.setLayout(new FlowLayout());
 
-        //initButtons();
+        initButtons();
 
         add(items, BorderLayout.CENTER);
         add(mainPhoto, BorderLayout.NORTH);
         setVisible(true);
     }
+    public void initButtons() {
+
+        offlineModeIcon = new ImageIcon("pictures/offline.png");
+        offlineModeButton = new JButton(offlineModeIcon);
+        offlineModeButton.setToolTipText("Offline Game Mode.");
+        offlineModeButton.addMouseListener(new MouseAction());
+        offlineModeButton.addActionListener(new OfflineModeAction());
+        onlineModeIcon = new ImageIcon("pictures/online.png");
+        onlineModeButton = new JButton(onlineModeIcon);
+        onlineModeButton.setToolTipText("Online Game Mode.");
+        onlineModeButton.addActionListener(new OnlineModeAction());
+        onlineModeButton.addMouseListener(new MouseAction());
+        settingIcon = new ImageIcon("pictures/setting.png");
+        settingButton = new JButton(settingIcon);
+        settingButton.addActionListener(new SettingButtonAction());
+        settingButton.addMouseListener(new MouseAction());
+        settingButton.setToolTipText("Setting And User Details.");
+        exitIcon = new ImageIcon("pictures/exit.png");
+        exitButton = new JButton(exitIcon);
+        exitButton.setToolTipText("Exit Form Current User Account.");
+        exitButton.addActionListener(new ExitButtonAction());
+        exitButton.addMouseListener(new MouseAction());
+
+        items.add(offlineModeButton);
+        items.add(onlineModeButton);
+        items.add(settingButton);
+        items.add(exitButton);
+    }
+
 }
