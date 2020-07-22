@@ -61,7 +61,7 @@ public class LoginFrame extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
 //        signUp.addActionListener(new SignUpAction());
-//        signIn.addActionListener(new SignInAction());
+        signIn.addActionListener(new SignInAction());
 
 
     }
@@ -103,6 +103,13 @@ public class LoginFrame extends JFrame {
         }
 
     }
+    class SignInAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            signInUser();
+        }
+    }
+
 
 
 }
