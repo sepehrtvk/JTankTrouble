@@ -28,12 +28,13 @@ public class LoginFrame extends JFrame {
         setLayout(new BorderLayout());
         setBounds(700, 250, 320, 515);
 
-       initLoginFrame();
-//        initRemindMe();
+        initLoginFrame();
+        initRemindMe();
 //        initInformationPanel();
         setVisible(true);
 
     }
+
     public void initLoginFrame() {
 
         tankPhoto = new ImageIcon("gifFiles/gif.gif");
@@ -65,6 +66,24 @@ public class LoginFrame extends JFrame {
 
 
     }
+    public void initRemindMe() {
+        File accounts = new File("Accounts.txt");
+        try (Scanner scanner = new Scanner(new FileReader(accounts))) {
+            String account;
+            while (scanner.hasNextLine()) {
+                account = scanner.nextLine() + "\n";
+                String[] strings = account.split(" ");
+                if (account.contains("true")) {
+                    remindMe.setSelected(true);
+                    userName.setText(strings[0]);
+                    passwordField.setText(strings[1]);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void signUpUser(File accounts) {
         try (FileWriter fileWriter = new FileWriter(accounts, true)) {
             fileWriter.write(userName.getText() + " " + passwordField.getText() + " " + remindMe.isSelected() + " 0 0 0 0 0 " + "\n");
@@ -77,6 +96,7 @@ public class LoginFrame extends JFrame {
         }
 
     }
+
     public void signInUser() {
         File accounts = new File("Accounts.txt");
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
@@ -103,12 +123,14 @@ public class LoginFrame extends JFrame {
         }
 
     }
+
     class SignInAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             signInUser();
         }
     }
+
     class SignUpAction implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -130,7 +152,6 @@ public class LoginFrame extends JFrame {
             }
         }
     }
-
 
 
 }
