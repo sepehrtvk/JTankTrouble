@@ -67,5 +67,13 @@ public class MainFrame extends JFrame {
         items.add(settingButton);
         items.add(exitButton);
     }
+    class ExitButtonAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            new LoginFrame();
+        }
+    }
+
 
 }
