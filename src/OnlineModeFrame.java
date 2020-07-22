@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Scanner;
@@ -86,6 +88,15 @@ public class OnlineModeFrame extends JFrame {
         newPanel.setBorder(new LineBorder(Color.red, 2));
         panel.add(newPanel);
 
+    }
+
+    class CreateNewGameAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            new CreateNewGameFrame("Make A New Game");
+        }
     }
 
 
