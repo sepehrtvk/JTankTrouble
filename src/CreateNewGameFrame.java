@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class CreateNewGameFrame extends JFrame {
     private JPanel settingPanel;
@@ -109,6 +111,17 @@ public class CreateNewGameFrame extends JFrame {
 
         settingPanel.add(optionPanel, BorderLayout.SOUTH);
 
+    }
+    class OkButtonAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameDetails = tankHealthSlider.getValue() + " " + shotDamageSlider.getValue() + " " + destructibleWallSlider.getValue();
+            String data = gameNameText.getText() + " " + gameMode.getSelectedItem().toString() + " " + gameFinishMode.getSelectedItem().toString() + " " + playerNumber.getSelectedItem().toString() + " 0 " + gameDetails;
+            writeToFile(data);
+            dispose();
+            new OnlineModeFrame();
+        }
     }
 
 
