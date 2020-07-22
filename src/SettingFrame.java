@@ -82,6 +82,27 @@ public class SettingFrame extends JFrame {
         userInformationPanel.add(text);
 
     }
+    public void initSettingPanel() {
+
+        settingPanel = new JPanel();
+        gameDetailsPanel = new JPanel();
+        serverPanel = new JPanel();
+        serverPanel.setBackground(Color.darkGray);
+        serverPanel.setLayout(new BorderLayout());
+        serverPanel.setBorder(new LineBorder(Color.GRAY, 2));
+        gameDetailsPanel.setBackground(Color.darkGray);
+        gameDetailsPanel.setLayout(new GridLayout(3, 2));
+        settingPanel.setBackground(Color.darkGray);
+        settingPanel.setLayout(new BorderLayout());
+        sliderAndIcon("pictures/tankHealth.png", 40);
+        sliderAndIcon("pictures/shotDamage.png", 80);
+        sliderAndIcon("pictures/DestructibleWall.png", 20);
+        initServerPanel();
+        add(settingPanel);
+        settingPanel.add(gameDetailsPanel, BorderLayout.NORTH);
+        settingPanel.add(serverPanel, BorderLayout.CENTER);
+    }
+
 
 
 
