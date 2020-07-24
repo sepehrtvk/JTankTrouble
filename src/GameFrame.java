@@ -17,14 +17,14 @@ import java.util.Scanner;
  * This example uses the modern BufferStrategy approach for double-buffering,
  * actually it performs triple-buffering!
  * For more information on BufferStrategy check out:
- *    http://docs.oracle.com/javase/tutorial/extra/fullscreen/bufferstrategy.html
- *    http://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferStrategy.html
+ * http://docs.oracle.com/javase/tutorial/extra/fullscreen/bufferstrategy.html
+ * http://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferStrategy.html
  *
  * @author Seyed Mohammad Ghaffarian
  */
 public class GameFrame extends JFrame {
 
-    public static final int GAME_HEIGHT = 800;// 720p game resolution
+    public static final int GAME_HEIGHT = 880;// 720p game resolution
     //720
     public static final int GAME_WIDTH = 16 * 720 / 9;  // wide aspect ratio
 
@@ -32,7 +32,7 @@ public class GameFrame extends JFrame {
     private BufferedImage image1;
     private BufferedImage image2;
     private BufferedImage image3;
-    private  BufferedImage image4;
+    private BufferedImage image4;
     private BufferedImage image5;
 
     private BufferStrategy bufferStrategy;
@@ -46,25 +46,24 @@ public class GameFrame extends JFrame {
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setLayout(new BorderLayout());
-        PlayerState=new JPanel();
+        PlayerState = new JPanel();
         PlayerState.setBackground(Color.pink);
-        add(PlayerState,BorderLayout.SOUTH);
+        add(PlayerState, BorderLayout.SOUTH);
 
-        try{
+        try {
             image1 = ImageIO.read(new File("Tank_dark.png"));
-            image2=ImageIO.read(new File("Tank_blue.png"));
-            image3=ImageIO.read(new File("Tank_red.png"));
-            image4=ImageIO.read(new File("Tank_green.png"));
-            image5=ImageIO.read(new File("Tank_sand.png"));
-        }
-        catch(IOException e){
+            image2 = ImageIO.read(new File("Tank_blue.png"));
+            image3 = ImageIO.read(new File("Tank_red.png"));
+            image4 = ImageIO.read(new File("Tank_green.png"));
+            image5 = ImageIO.read(new File("Tank_sand.png"));
+        } catch (IOException e) {
             System.out.println(e);
         }
     }
 
     /**
      * This must be called once after the JFrame is shown:
-     *    frame.setVisible(true);
+     * frame.setVisible(true);
      * and before any rendering is started.
      */
     public void initBufferStrategy() {
@@ -143,18 +142,20 @@ public class GameFrame extends JFrame {
         g2d.setColor(Color.BLACK);
         //g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
         g2d.setColor(Color.lightGray);
-        g2d.fillRect(0,640,1280,160);
-       // g2d.drawImage(image1,state.locX,state.locY,null);
+        g2d.fillRect(0, 720, 1280, 160);
+        // g2d.drawImage(image1,state.locX,state.locY,null);
         g2d.setColor(Color.black);
-        g2d.drawImage(rotate(image1,state.rotateAmount),state.locX,state.locY,null);
-        File accounts = new File("map.txt");
-        setName(g2d,"narges","sara","bardia");
+        g2d.drawImage(rotate(image1, state.rotateAmount), state.locX, state.locY, null);
+        File accounts = new File("map4.txt");
+
+        setName(g2d, "narges", "sara", "bardia");
 
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
-            int lineCounter=0;
+            int lineCounter = 0;
             int currentX = 30;
-            int currentY = 70;
+            int currentY = 60;
 
+            setMap(g2d,new File("map.txt"));
             while (scanner.hasNext()) {
 
                 char[] chars = scanner.next().toCharArray();
@@ -162,7 +163,9 @@ public class GameFrame extends JFrame {
                 for (int k = 0; k < chars.length; k++) {
 
                     if (lineCounter % 2 == 0) {
+
                         if (k % 2 == 0) {
+
                             if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 5, 5);
                             currentX += 5;
@@ -179,10 +182,12 @@ public class GameFrame extends JFrame {
                                 g2d.fillRect(currentX, currentY, 5, 50);
                             currentX += 5;
                         } else {
-                            if (chars[k] == '1')
-                                g2d.fillRect(currentX, currentY, 50, 50);
+//                            if (chars[k] == '1') {
+//                                g2d.setColor(Color.white);
+//                                //g2d.fillRect(currentX, currentY, 50, 50);
+//                                g2d.setColor(Color.black);
+//                            }
                             currentX += 50;
-
                         }
                     }
                 }
@@ -197,23 +202,37 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public void  setName(Graphics2D g2d,String player1,String player2,String player3){
-        if(player1!=null) {
-            g2d.drawImage(image2, 150, 670, null);
-            player1="narges";
-            g2d.drawString(player1,160,665);
+    public void setMap(Graphics2D g2D, File map) {
+        int row = 1;
+        int column = 0;
+        try (Scanner scanner = new Scanner(new FileReader(map))) {
+            column = scanner.nextLine().length();
+            while (scanner.hasNext()) {
+                column = scanner.nextLine().length();
+                row++;
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
         }
-        if(player2!=null) {
-            g2d.drawImage(image3, 450, 670, null);
-            g2d.drawString(player2,455,665);
+    }
+
+    public void setName(Graphics2D g2d, String player1, String player2, String player3) {
+        if (player1 != null) {
+            g2d.drawImage(image2, 150, 750, null);
+            player1 = "narges";
+            g2d.drawString(player1, 160, 745);
+        }
+        if (player2 != null) {
+            g2d.drawImage(image3, 450, 750, null);
+            g2d.drawString(player2, 455, 745);
         }
 
-        if(player3!=null) {
-            g2d.drawImage(image4, 750, 670, null);
-            g2d.drawString(player3,755,665);
+        if (player3 != null) {
+            g2d.drawImage(image4, 750, 750, null);
+            g2d.drawString(player3, 755, 745);
         }
 
-        g2d.drawImage(image5,1050,670,null);
+        g2d.drawImage(image5, 1050, 750, null);
     }
 
 }
