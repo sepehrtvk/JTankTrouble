@@ -146,7 +146,7 @@ public class GameFrame extends JFrame {
         // g2d.drawImage(image1,state.locX,state.locY,null);
         g2d.setColor(Color.black);
         g2d.drawImage(rotate(image1, state.rotateAmount), state.locX, state.locY, null);
-        File accounts = new File("map4.txt");
+        File accounts = new File("map2.txt");
 
         setName(g2d, "narges", "sara", "bardia");
 
@@ -155,25 +155,21 @@ public class GameFrame extends JFrame {
             int currentX = 30;
             int currentY = 60;
 
-            setMap(g2d,new File("map.txt"));
+            setMap(g2d, new File("map.txt"));
             while (scanner.hasNext()) {
-
                 char[] chars = scanner.next().toCharArray();
-
                 for (int k = 0; k < chars.length; k++) {
-
                     if (lineCounter % 2 == 0) {
 
                         if (k % 2 == 0) {
-
-                            if (chars[k] == '1')
+                            if (chars[k] == '1' && k-1>=1 && k+1<chars.length && chars[k+1]=='1' && chars[k-1]=='1' )
                                 g2d.fillRect(currentX, currentY, 5, 5);
                             currentX += 5;
+
                         } else {
                             if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 50, 5);
                             currentX += 50;
-
                         }
                     }
                     if (lineCounter % 2 != 0) {
@@ -181,12 +177,8 @@ public class GameFrame extends JFrame {
                             if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 5, 50);
                             currentX += 5;
+
                         } else {
-//                            if (chars[k] == '1') {
-//                                g2d.setColor(Color.white);
-//                                //g2d.fillRect(currentX, currentY, 50, 50);
-//                                g2d.setColor(Color.black);
-//                            }
                             currentX += 50;
                         }
                     }
@@ -195,7 +187,6 @@ public class GameFrame extends JFrame {
                 if (lineCounter % 2 == 0) currentY += 5;
                 else currentY += 50;
                 lineCounter++;
-
             }
         } catch (Exception ee) {
             ee.printStackTrace();
