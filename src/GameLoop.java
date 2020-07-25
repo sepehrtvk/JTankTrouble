@@ -1,5 +1,8 @@
 /*** In The Name of Allah ***/
 
+import java.io.IOException;
+import java.util.PrimitiveIterator;
+
 /**
  * A very simple structure for the main game loop.
  * THIS IS NOT PERFECT, but works for most situations.
@@ -24,6 +27,8 @@ public class GameLoop implements Runnable {
 	
 	private GameFrame canvas;
 	private GameState state;
+	private GameState state1;
+	private GameState state2;
 
 	public GameLoop(GameFrame frame) {
 		canvas = frame;
@@ -33,10 +38,18 @@ public class GameLoop implements Runnable {
 	 * This must be called before the game loop starts.
 	 */
 	public void init() {
-		state = new GameState();
+		state = new GameState(1);
+		state1 = new GameState(2);
+		state2 = new GameState(3);
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
+		canvas.addKeyListener(state1.getKeyListener());
+		canvas.addMouseListener(state1.getMouseListener());
+		canvas.addMouseMotionListener(state1.getMouseMotionListener());
+		canvas.addKeyListener(state2.getKeyListener());
+		canvas.addMouseListener(state2.getMouseListener());
+		canvas.addMouseMotionListener(state2.getMouseMotionListener());
 	}
 
 	@Override
@@ -47,15 +60,22 @@ public class GameLoop implements Runnable {
 				long start = System.currentTimeMillis();
 				//
 				state.update();
-				canvas.render(state);
+				state1.update();
+				state2.update();
+				canvas.render(state,state2,state1);
+
 				gameOver = state.gameOver;
 				//
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
 				if (delay > 0)
 					Thread.sleep(delay);
-			} catch (InterruptedException ex) {
+			} catch (InterruptedException | IOException ex) {
 			}
 		}
-		canvas.render(state);
+		try {
+			canvas.render(state,state1,state2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
