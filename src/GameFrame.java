@@ -6,10 +6,11 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -37,8 +38,6 @@ public class GameFrame extends JFrame {
 
     private BufferStrategy bufferStrategy;
 
-    private JPanel PlayerState;
-
     public GameFrame(String title) {
 
         super(title);
@@ -46,9 +45,6 @@ public class GameFrame extends JFrame {
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setLayout(new BorderLayout());
-        PlayerState = new JPanel();
-        PlayerState.setBackground(Color.pink);
-        add(PlayerState, BorderLayout.SOUTH);
 
         try {
             image1 = ImageIO.read(new File("Tank_dark.png"));
@@ -76,7 +72,7 @@ public class GameFrame extends JFrame {
     /**
      * Game rendering with triple-buffering using BufferStrategy.
      */
-    public void render(GameState state) {
+    public void render(GameState state1, GameState state, GameState state2) throws IOException {
         // Render single frame
         do {
             // The following loop ensures that the contents of the drawing buffer
@@ -86,7 +82,7 @@ public class GameFrame extends JFrame {
                 // to make sure the strategy is validated
                 Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
                 try {
-                    doRendering(graphics, state);
+                    doRendering(graphics, state1, state, state2);
 
                 } finally {
                     // Dispose the graphics
@@ -125,7 +121,7 @@ public class GameFrame extends JFrame {
         at.setToRotation(radians, x + (image.getWidth() / 2), y + (image.getHeight() / 2));
         at.translate(x, y);
         g2d.setTransform(at);
-        // Paint the originl image
+        // Paint the original image
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
         return rotate;
@@ -134,7 +130,7 @@ public class GameFrame extends JFrame {
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state) {
+    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2)  {
         // Draw background
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -145,30 +141,40 @@ public class GameFrame extends JFrame {
         g2d.fillRect(0, 720, 1280, 160);
         // g2d.drawImage(image1,state.locX,state.locY,null);
         g2d.setColor(Color.black);
-        g2d.drawImage(rotate(image1, state.rotateAmount), state.locX, state.locY, null);
-        File accounts = new File("map2.txt");
+
+        //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
+        setTanks(3, g2d, state, state1, state2);
+        File accounts = new File("map5.txt");
 
         setName(g2d, "narges", "sara", "bardia");
+        setMap(g2d, new File("map4.txt"));
 
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
             int lineCounter = 0;
             int currentX = 30;
             int currentY = 60;
-
-            setMap(g2d, new File("map.txt"));
             while (scanner.hasNext()) {
                 char[] chars = scanner.next().toCharArray();
                 for (int k = 0; k < chars.length; k++) {
                     if (lineCounter % 2 == 0) {
-
                         if (k % 2 == 0) {
-                            if (chars[k] == '1' && k-1>=1 && k+1<chars.length && chars[k+1]=='1' && chars[k-1]=='1' )
+                            if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 5, 5);
+                            else if(chars[k]=='2'){
+                                g2d.setColor(Color.gray);
+                                g2d.fillRect(currentX, currentY, 5, 5);
+                            }
+                            g2d.setColor(Color.black);
                             currentX += 5;
-
-                        } else {
+                        }
+                        else {
                             if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 50, 5);
+                            else if(chars[k]=='2'){
+                                g2d.setColor(Color.gray);
+                                g2d.fillRect(currentX, currentY, 50, 5);
+                            }
+                            g2d.setColor(Color.black);
                             currentX += 50;
                         }
                     }
@@ -176,8 +182,12 @@ public class GameFrame extends JFrame {
                         if (k % 2 == 0) {
                             if (chars[k] == '1')
                                 g2d.fillRect(currentX, currentY, 5, 50);
+                            else if(chars[k]=='2'){
+                                g2d.setColor(Color.gray);
+                                g2d.fillRect(currentX, currentY, 5, 50);
+                            }
+                            g2d.setColor(Color.black);
                             currentX += 5;
-
                         } else {
                             currentX += 50;
                         }
@@ -224,6 +234,23 @@ public class GameFrame extends JFrame {
         }
 
         g2d.drawImage(image5, 1050, 750, null);
+    }
+
+    public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state, GameState state1, GameState state2) {
+        if (numOfPlayer > 0) {
+            Tank tank = new Tank("tank_blue_RS.png");
+            g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
+            numOfPlayer--;
+            if (numOfPlayer > 0) {
+                Tank tank1 = new Tank("tank_green_RS.png");
+                g2d.drawImage(rotate(tank1.getIcon(), state1.rotateAmount), state1.locX, state1.locY, null);
+                numOfPlayer--;
+                if (numOfPlayer > 0) {
+                    Tank tank2 = new Tank("tank_red_RS.png");
+                    g2d.drawImage(rotate(tank2.getIcon(), state2.rotateAmount), state2.locX, state2.locY, null);
+                }
+            }
+        }
     }
 
 }
