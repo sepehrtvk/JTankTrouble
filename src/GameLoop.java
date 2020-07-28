@@ -1,5 +1,6 @@
 /*** In The Name of Allah ***/
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.PrimitiveIterator;
 
@@ -44,12 +45,12 @@ public class GameLoop implements Runnable {
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
-		canvas.addKeyListener(state1.getKeyListener());
-		canvas.addMouseListener(state1.getMouseListener());
-		canvas.addMouseMotionListener(state1.getMouseMotionListener());
-		canvas.addKeyListener(state2.getKeyListener());
-		canvas.addMouseListener(state2.getMouseListener());
-		canvas.addMouseMotionListener(state2.getMouseMotionListener());
+//		canvas.addKeyListener(state1.getKeyListener());
+//		canvas.addMouseListener(state1.getMouseListener());
+//		canvas.addMouseMotionListener(state1.getMouseMotionListener());
+//		canvas.addKeyListener(state2.getKeyListener());
+//		canvas.addMouseListener(state2.getMouseListener());
+//		canvas.addMouseMotionListener(state2.getMouseMotionListener());
 	}
 
 	@Override
@@ -60,8 +61,8 @@ public class GameLoop implements Runnable {
 				long start = System.currentTimeMillis();
 				//
 				state.update();
-				state1.update();
-				state2.update();
+//				state1.update();
+//				state2.update();
 				canvas.render(state,state2,state1);
 
 				gameOver = state.gameOver;
@@ -69,7 +70,7 @@ public class GameLoop implements Runnable {
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
 				if (delay > 0)
 					Thread.sleep(delay);
-			} catch (InterruptedException | IOException ex) {
+			} catch (InterruptedException | IOException | AWTException ex) {
 			}
 		}
 		try {
