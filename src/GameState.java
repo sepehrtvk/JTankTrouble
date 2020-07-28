@@ -64,9 +64,10 @@ public class GameState {
     }
 
 
-    public Rectangle getBounds(int locX,int locY){
-        return new Rectangle( locX, locY, 25, 25);
+    public Rectangle getBounds(int locX, int locY) {
+        return new Rectangle(locX, locY, 25, 25);
     }
+
     /**
      * The method which updates the game state.
      */
@@ -78,20 +79,28 @@ public class GameState {
         }
 
         if (keyUP) {
-//            boolean Permission=true;
-//            for (Wall wall : Controller.walls) {
-//                if(wall.intersects(getBounds(locX+5,locY+5))){
-//                    System.out.println("4");
-//                    Permission = false;
-//                    break;
-//                }
-//            }
-//            if (Permission)
+            boolean Permission = true;
+            for (Wall wall : Controller.walls) {
+                if (wall.intersects(getBounds(locX + 5, locY + 5))) {
+                    System.out.println("4");
+                    Permission = false;
+                    break;
+                }
+            }
+            if (Permission)
                 move(+5);
         }
 
         if (keyDOWN) {
-            boolean Permission=true;
+            boolean Permission = true;
+            for (Wall wall : Controller.walls) {
+                if (wall.intersects(getBounds(locX + 5, locY + 5))) {
+                    System.out.println("5");
+                    Permission = false;
+                    break;
+                }
+            }
+            if (Permission)
                 move(-5);
         }
 
@@ -102,10 +111,11 @@ public class GameState {
         if (keyRIGHT)
             rotateAmount += 15;
 
-        locX = Math.max(locX, 42);
-        locX = Math.min(locX, GameFrame.GAME_WIDTH - diam - 42);
+        locX = Math.max(locX, 40);
+        locX = Math.min(locX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
+
         locY = Math.max(locY, 70);
-        locY = Math.min(locY, ((Controller.row-1)/2)*50+60);
+        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1)*5 -25);
     }
 
     public void move(int px) {
