@@ -32,12 +32,15 @@ public class GameState {
     private boolean one = false;
     private boolean two = false;
     private boolean three = false;
+    boolean PermissionDown = true;
+    boolean PermissionUp = true;
 
 
     public GameState(int num) {
         locX = 100;
         locY = 100;
-        diam = 42;
+        //changed from 42 to 25
+        diam = 25;
         rotateAmount = 0;
         gameOver = false;
         //
@@ -64,9 +67,10 @@ public class GameState {
     }
 
 
-    public Rectangle getBounds(int locX,int locY){
-        return new Rectangle( locX, locY, 25, 25);
+    public Rectangle getBounds(int locX, int locY) {
+        return new Rectangle(locX, locY, 28, 28);
     }
+
     /**
      * The method which updates the game state.
      */
@@ -77,35 +81,54 @@ public class GameState {
             locX = mouseX - diam / 2;
         }
 
+
         if (keyUP) {
-//            boolean Permission=true;
-//            for (Wall wall : Controller.walls) {
-//                if(wall.intersects(getBounds(locX+5,locY+5))){
-//                    System.out.println("4");
-//                    Permission = false;
-//                    break;
-//                }
-//            }
-//            if (Permission)
+            PermissionUp = true;
+            for (Wall wall : Controller.walls) {
+
+                if (wall.getWidth() == 5 && wall.getHeight() == 50 && rotateAmount != 90 && rotateAmount != -90 && rotateAmount != 270 && rotateAmount != -270) {
+                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
+                        PermissionUp = false;
+                        break;
+                    }
+                }
+
+                if (wall.getWidth() == 50 && wall.getHeight() == 5 && rotateAmount != 180 && rotateAmount != -180 && rotateAmount != 0) {
+                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
+                        PermissionUp = false;
+                        break;
+                    }
+                }
+
+            }
+            if (PermissionUp)
                 move(+5);
         }
 
         if (keyDOWN) {
-            boolean Permission=true;
-                move(-5);
+            for (Wall wall : Controller.walls) {
+            }
+            if (PermissionDown)
+            move(-5);
+
         }
 
 
-        if (keyLEFT)
+        if (keyLEFT) {
             rotateAmount -= 15;
+        }
 
-        if (keyRIGHT)
+        if (keyRIGHT) {
             rotateAmount += 15;
+        }
 
-        locX = Math.max(locX, 42);
-        locX = Math.min(locX, GameFrame.GAME_WIDTH - diam - 42);
+        locX = Math.max(locX, 40);
+        //Formula for tank movement limit
+        locX = Math.min(locX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
+
         locY = Math.max(locY, 70);
-        locY = Math.min(locY, ((Controller.row-1)/2)*50+60);
+        //Formula for tank movement limit
+        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
     }
 
     public void move(int px) {
