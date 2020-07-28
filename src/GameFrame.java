@@ -3,6 +3,9 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -35,16 +38,26 @@ public class GameFrame extends JFrame {
     private BufferedImage image3;
     private BufferedImage image4;
     private BufferedImage image5;
+    private BufferedImage background;
+    private BufferedImage taken;
+    public int row;
+    public int col;
 
+    private Graphics2D g2d;
     private BufferStrategy bufferStrategy;
+    private ArrayList<Wall> walls;
 
-    public GameFrame(String title) {
+    public GameFrame(String title) throws AWTException {
 
         super(title);
         setBackground(Color.white);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setLayout(new BorderLayout());
+        walls=new ArrayList<>();
+        Controller.walls=walls;
+        Controller.g2d=g2d;
+        Controller.taken=taken;
 
         try {
             image1 = ImageIO.read(new File("Tank_dark.png"));
@@ -52,6 +65,8 @@ public class GameFrame extends JFrame {
             image3 = ImageIO.read(new File("Tank_red.png"));
             image4 = ImageIO.read(new File("Tank_green.png"));
             image5 = ImageIO.read(new File("Tank_sand.png"));
+            background=ImageIO.read(new File("background.png"));
+
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -103,7 +118,7 @@ public class GameFrame extends JFrame {
 
 
     public BufferedImage rotate(BufferedImage image, Double degrees) {
-        // Calculate the new size of the image based on the angle of rotaion
+        // Calculate the new size of the image based on the angle of rotation
         double radians = Math.toRadians(degrees);
         double sin = Math.abs(Math.sin(radians));
         double cos = Math.abs(Math.cos(radians));
@@ -121,16 +136,18 @@ public class GameFrame extends JFrame {
         at.setToRotation(radians, x + (image.getWidth() / 2), y + (image.getHeight() / 2));
         at.translate(x, y);
         g2d.setTransform(at);
+        g2d.drawImage(background,0,0,null);
         // Paint the original image
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
+        this.g2d=g2d;
         return rotate;
     }
 
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2)  {
+    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2) {
         // Draw background
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -144,63 +161,13 @@ public class GameFrame extends JFrame {
 
         //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
         setTanks(3, g2d, state, state1, state2);
-        File accounts = new File("map5.txt");
 
         setName(g2d, "narges", "sara", "bardia");
-        setMap(g2d, new File("map4.txt"));
 
-        try (Scanner scanner = new Scanner(new FileReader(accounts))) {
-            int lineCounter = 0;
-            int currentX = 30;
-            int currentY = 60;
-            while (scanner.hasNext()) {
-                char[] chars = scanner.next().toCharArray();
-                for (int k = 0; k < chars.length; k++) {
-                    if (lineCounter % 2 == 0) {
-                        if (k % 2 == 0) {
-                            if (chars[k] == '1')
-                                g2d.fillRect(currentX, currentY, 5, 5);
-                            else if(chars[k]=='2'){
-                                g2d.setColor(Color.gray);
-                                g2d.fillRect(currentX, currentY, 5, 5);
-                            }
-                            g2d.setColor(Color.black);
-                            currentX += 5;
-                        }
-                        else {
-                            if (chars[k] == '1')
-                                g2d.fillRect(currentX, currentY, 50, 5);
-                            else if(chars[k]=='2'){
-                                g2d.setColor(Color.gray);
-                                g2d.fillRect(currentX, currentY, 50, 5);
-                            }
-                            g2d.setColor(Color.black);
-                            currentX += 50;
-                        }
-                    }
-                    if (lineCounter % 2 != 0) {
-                        if (k % 2 == 0) {
-                            if (chars[k] == '1')
-                                g2d.fillRect(currentX, currentY, 5, 50);
-                            else if(chars[k]=='2'){
-                                g2d.setColor(Color.gray);
-                                g2d.fillRect(currentX, currentY, 5, 50);
-                            }
-                            g2d.setColor(Color.black);
-                            currentX += 5;
-                        } else {
-                            currentX += 50;
-                        }
-                    }
-                }
-                currentX = 30;
-                if (lineCounter % 2 == 0) currentY += 5;
-                else currentY += 50;
-                lineCounter++;
-            }
-        } catch (Exception ee) {
-            ee.printStackTrace();
-        }
+        setMap(g2d, new File("map5.txt"));
+
+        drawMap(g2d);
+
     }
 
     public void setMap(Graphics2D g2D, File map) {
@@ -212,9 +179,14 @@ public class GameFrame extends JFrame {
                 column = scanner.nextLine().length();
                 row++;
             }
+
         } catch (Exception ee) {
             ee.printStackTrace();
         }
+        this.row=row;
+        this.col=column;
+        Controller.row=row;
+        Controller.col=col;
     }
 
     public void setName(Graphics2D g2d, String player1, String player2, String player3) {
@@ -237,20 +209,98 @@ public class GameFrame extends JFrame {
     }
 
     public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state, GameState state1, GameState state2) {
+        //g2d.drawImage(background, 0, 0, null);
         if (numOfPlayer > 0) {
             Tank tank = new Tank("tank_blue_RS.png");
+            taken=tank.getIcon();
             g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
-            numOfPlayer--;
-            if (numOfPlayer > 0) {
-                Tank tank1 = new Tank("tank_green_RS.png");
-                g2d.drawImage(rotate(tank1.getIcon(), state1.rotateAmount), state1.locX, state1.locY, null);
-                numOfPlayer--;
-                if (numOfPlayer > 0) {
-                    Tank tank2 = new Tank("tank_red_RS.png");
-                    g2d.drawImage(rotate(tank2.getIcon(), state2.rotateAmount), state2.locX, state2.locY, null);
-                }
-            }
+//            numOfPlayer--;
+
+//            if (numOfPlayer > 0) {
+//                Tank tank1 = new Tank("tank_green_RS.png");
+//                g2d.drawImage(rotate(tank1.getIcon(), state1.rotateAmount), state1.locX, state1.locY, null);
+//                numOfPlayer--;
+//                if (numOfPlayer > 0) {
+//                    Tank tank2 = new Tank("tank_red_RS.png");
+//                    g2d.drawImage(rotate(tank2.getIcon(), state2.rotateAmount), state2.locX, state2.locY, null);
+//                }
+//            }
         }
     }
 
+    public void drawMap(Graphics2D g2d) {
+        File accounts = new File("map5.txt");
+        try (Scanner scanner = new Scanner(new FileReader(accounts))) {
+            int lineCounter = 0;
+            int currentX = 30;
+            int currentY = 60;
+            while (scanner.hasNext()) {
+                char[] chars = scanner.next().toCharArray();
+                for (int k = 0; k < chars.length; k++) {
+                    if (lineCounter % 2 == 0) {
+                        if (k % 2 == 0) {
+                            if (chars[k] == '1') {
+                                Wall wall=new Wall(currentX,currentY,5,5,g2d,k);
+                                //System.out.println("black"+currentX+"-"+currentY);
+                                walls.add(wall);
+                            }
+                            else if (chars[k] == '2') {
+                                g2d.setColor(Color.lightGray);
+                                //System.out.println("graye"+currentX+"-"+currentY);
+                                Wall wall=new Wall(currentX,currentY,5,5,g2d,k);
+                                walls.add(wall);
+                            }
+                            g2d.setColor(Color.black);
+                            currentX += 5;
+                        } else {
+                            if (chars[k] == '1') {
+                                Wall wall=new Wall(currentX,currentY,50,5,g2d,k);
+                                //System.out.println("black"+currentX+"-"+currentY);
+                                walls.add(wall);
+                            }
+                            else if (chars[k] == '2') {
+                                g2d.setColor(Color.lightGray);
+                                //System.out.println("graye"+currentX+"-"+currentY);
+                                Wall wall=new Wall(currentX,currentY,50,5,g2d,k);
+                                walls.add(wall);
+                            }
+                            g2d.setColor(Color.black);
+                            currentX += 50;
+                        }
+                    }
+                    if (lineCounter % 2 != 0) {
+                        if (k % 2 == 0) {
+                            if (chars[k] == '1') {
+                                Wall wall=new Wall(currentX,currentY,5,50,g2d,k);
+                                //System.out.println("black"+currentX+"-"+currentY);
+                                walls.add(wall);
+                            }
+                            else if (chars[k] == '2') {
+                                g2d.setColor(Color.lightGray);
+                                //System.out.println("graye"+currentX+"-"+currentY);
+                                Wall wall=new Wall(currentX,currentY,5,50,g2d,k);
+                                walls.add(wall);
+                            }
+                            g2d.setColor(Color.black);
+                            currentX += 5;
+                        } else {
+                            currentX += 50;
+                        }
+                    }
+                }
+                currentX = 30;
+                if (lineCounter % 2 == 0) currentY += 5;
+                else currentY += 50;
+                lineCounter++;
+            }
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+    }
+
+    public void getColor(int x ,int y ) throws AWTException {
+        Robot robot=new Robot();
+        System.out.println(robot.getPixelColor(x,y));
+
+    }
 }
