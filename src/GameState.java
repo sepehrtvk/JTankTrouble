@@ -32,6 +32,7 @@ public class GameState {
     private boolean one = false;
     private boolean two = false;
     private boolean three = false;
+    private int step=0;
 
 
     public GameState(int num) {
@@ -78,30 +79,42 @@ public class GameState {
             locX = mouseX - diam / 2;
         }
 
+        if(step>2)
+            step=0;
+
         if (keyUP) {
-            boolean Permission = true;
+            boolean PermissionDown = true;
             for (Wall wall : Controller.walls) {
                 if (wall.intersects(getBounds(locX + 5, locY + 5))) {
                     System.out.println("4");
-                    Permission = false;
+                    PermissionDown = false;
                     break;
                 }
             }
-            if (Permission)
+            if (PermissionDown)
                 move(+5);
+            if(!PermissionDown && step<2){
+                move(+5);
+                step++;
+            }
         }
 
         if (keyDOWN) {
-            boolean Permission = true;
+            boolean PermissionUp = true;
             for (Wall wall : Controller.walls) {
                 if (wall.intersects(getBounds(locX + 5, locY + 5))) {
                     System.out.println("5");
-                    Permission = false;
+                    PermissionUp = false;
                     break;
                 }
             }
-            if (Permission)
+            if (PermissionUp)
                 move(-5);
+            if(!PermissionUp && step<2) {
+                move(-5);
+                step++;
+                System.out.println(step);
+            }
         }
 
 
