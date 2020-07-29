@@ -32,15 +32,12 @@ public class GameState {
     private boolean one = false;
     private boolean two = false;
     private boolean three = false;
-    boolean PermissionDown = true;
-    boolean PermissionUp = true;
 
 
     public GameState(int num) {
         locX = 100;
         locY = 100;
-        //changed from 42 to 25
-        diam = 25;
+        diam = 42;
         rotateAmount = 0;
         gameOver = false;
         //
@@ -68,7 +65,7 @@ public class GameState {
 
 
     public Rectangle getBounds(int locX, int locY) {
-        return new Rectangle(locX, locY, 28, 28);
+        return new Rectangle(locX, locY, 25, 25);
     }
 
     /**
@@ -81,69 +78,44 @@ public class GameState {
             locX = mouseX - diam / 2;
         }
 
-
         if (keyUP) {
-            PermissionUp = true;
+            boolean Permission = true;
             for (Wall wall : Controller.walls) {
-
-                if (wall.getWidth() == 5 && wall.getHeight() == 50 ) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        PermissionUp = false;
-                        break;
-                    }
+                if (wall.intersects(getBounds(locX + 5, locY + 5))) {
+                    System.out.println("4");
+                    Permission = false;
+                    break;
                 }
-//&& rotateAmount != 90 && rotateAmount != -90 && rotateAmount != 270 && rotateAmount != -270
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        PermissionUp = false;
-                        break;
-                    }
-                }
-// && rotateAmount != 180 && rotateAmount != -180 && rotateAmount != 0
             }
-            if (PermissionUp)
+            if (Permission)
                 move(+5);
         }
 
         if (keyDOWN) {
-            PermissionDown = true;
+            boolean Permission = true;
             for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && (wall.getHeight() == 50 || wall.getHeight() == 5)) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        PermissionDown = false;
-                        break;
-
-                    }
+                if (wall.intersects(getBounds(locX + 5, locY + 5))) {
+                    System.out.println("5");
+                    Permission = false;
+                    break;
                 }
-//&& rotateAmount != 90 && rotateAmount != -90 && rotateAmount != 270 && rotateAmount != -270
-                if ((wall.getWidth() == 50 || wall.getWidth() == 5) && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        PermissionDown = false;
-                        break;
-                    }
-                }
-//&& rotateAmount != 180 && rotateAmount != -180 && rotateAmount != 0
             }
-            if (PermissionDown)
+            if (Permission)
                 move(-5);
         }
 
 
-        if (keyLEFT) {
+        if (keyLEFT)
             rotateAmount -= 15;
-        }
 
-        if (keyRIGHT) {
+        if (keyRIGHT)
             rotateAmount += 15;
-        }
 
         locX = Math.max(locX, 40);
-        //Formula for tank movement limit
         locX = Math.min(locX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
 
         locY = Math.max(locY, 70);
-        //Formula for tank movement limit
-        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
+        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1)*5 -25);
     }
 
     public void move(int px) {
