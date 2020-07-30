@@ -32,9 +32,10 @@ public class GameState {
     private boolean one = false;
     private boolean two = false;
     private boolean three = false;
-    private int step=0;
+    private int step = 0;
     boolean PermissionUp = true;
     boolean PermissionDown = true;
+    boolean check = true;
 
 
     public GameState(int num) {
@@ -80,23 +81,23 @@ public class GameState {
             locY = mouseY - diam / 2;
             locX = mouseX - diam / 2;
         }
-//
-//        if(step<2)
-//            step=0;
+
 
         if (keyUP) {
-            PermissionUp=true;
+            PermissionUp = true;
             for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50 ) {
+                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
                     if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
+                        //&&
+                        //                            ((rotateAmount == 0 && locX < wall.getX()) || ((rotateAmount == 180 || rotateAmount == -180) && locX > wall.getX()))
                         PermissionUp = false;
-                        //System.out.println(wall.getHeight());
                         break;
                     }
                 }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5 ) {
+                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
                     if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        //System.out.println(wall.getHeight());
+                        // &&
+                        //                            (((rotateAmount == +90 || rotateAmount == -270) && locY < wall.getY()) || (((rotateAmount == -90 || rotateAmount == -270) && locY > wall.getY())))
                         PermissionUp = false;
                         break;
                     }
@@ -104,22 +105,29 @@ public class GameState {
             }
             if (PermissionUp)
                 move(+5);
-            if(!PermissionDown ){
+            for (Wall wall : Controller.walls)
+                if (!PermissionDown && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
+                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
                 move(+5);
+                break;
             }
         }
 
         if (keyDOWN) {
-            PermissionDown=true;
+            PermissionDown = true;
             for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50 ) {
+                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
                     if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
+                        //&&
+                        //                            ((((rotateAmount == 0) || locX >= wall.getX())) || (((rotateAmount == -180 || rotateAmount == 180) && locX <= wall.getX())))
                         PermissionDown = false;
                         break;
                     }
                 }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5 ) {
+                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
                     if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
+                        // &&
+                        //                            (((rotateAmount == -90 || rotateAmount == 270) && locY<wall.getY()))|| (((rotateAmount==90||rotateAmount==-270)&& locY>wall.getY()))
                         PermissionDown = false;
                         break;
                     }
@@ -127,9 +135,13 @@ public class GameState {
             }
             if (PermissionDown)
                 move(-5);
-            if(!PermissionUp ) {
-                move(-5);
-            }
+            for (Wall wall : Controller.walls)
+                if (!PermissionUp && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
+                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
+                    move(-5);
+                    break;
+                }
+//        }
         }
 
 
@@ -143,7 +155,7 @@ public class GameState {
         locX = Math.min(locX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
 
         locY = Math.max(locY, 70);
-        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1)*5 -25);
+        locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
     }
 
     public void move(int px) {
