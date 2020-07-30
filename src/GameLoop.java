@@ -28,6 +28,7 @@ public class GameLoop implements Runnable {
 	
 	private GameFrame canvas;
 	private GameState state;
+	//state for other player
 	private GameState state1;
 	private GameState state2;
 
