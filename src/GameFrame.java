@@ -11,10 +11,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * The window on which the rendering is performed.
@@ -42,22 +40,27 @@ public class GameFrame extends JFrame {
     private BufferedImage taken;
     public int row;
     public int col;
+    long start = System.currentTimeMillis();
+    long startSec = start / 1000;
 
     private Graphics2D g2d;
     private BufferStrategy bufferStrategy;
     private ArrayList<Wall> walls;
+    private boolean allWallsAdded = false;
 
-    public GameFrame(String title) throws AWTException {
+    public GameFrame(String title) throws AWTException, IOException {
 
         super(title);
         setBackground(Color.white);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setLayout(new BorderLayout());
-        walls=new ArrayList<>();
-        Controller.walls=walls;
-        Controller.g2d=g2d;
-        Controller.taken=taken;
+        walls = new ArrayList<>();
+        Controller.walls = walls;
+        Controller.g2d = g2d;
+        Controller.taken = taken;
+
+        setPrize(g2d);
 
         try {
             image1 = ImageIO.read(new File("Tank_dark.png"));
@@ -65,7 +68,7 @@ public class GameFrame extends JFrame {
             image3 = ImageIO.read(new File("Tank_red.png"));
             image4 = ImageIO.read(new File("Tank_green.png"));
             image5 = ImageIO.read(new File("Tank_sand.png"));
-            background=ImageIO.read(new File("background.png"));
+            background = ImageIO.read(new File("background.png"));
 
         } catch (IOException e) {
             System.out.println(e);
@@ -136,11 +139,11 @@ public class GameFrame extends JFrame {
         at.setToRotation(radians, x + (image.getWidth() / 2), y + (image.getHeight() / 2));
         at.translate(x, y);
         g2d.setTransform(at);
-        g2d.drawImage(background,0,0,null);
+        g2d.drawImage(background, 0, 0, null);
         // Paint the original image
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
-        this.g2d=g2d;
+        this.g2d = g2d;
         return rotate;
     }
 
@@ -164,7 +167,7 @@ public class GameFrame extends JFrame {
 
         setName(g2d, "narges", "sara", "bardia");
 
-        setMap(g2d, new File("map5.txt"));
+        setMap(g2d, new File("map3.txt"));
 
         drawMap(g2d);
 
@@ -183,10 +186,10 @@ public class GameFrame extends JFrame {
         } catch (Exception ee) {
             ee.printStackTrace();
         }
-        this.row=row;
-        this.col=column;
-        Controller.row=row;
-        Controller.col=col;
+        this.row = row;
+        this.col = column;
+        Controller.row = row;
+        Controller.col = col;
     }
 
     public void setName(Graphics2D g2d, String player1, String player2, String player3) {
@@ -195,24 +198,24 @@ public class GameFrame extends JFrame {
             player1 = "narges";
             g2d.drawString(player1, 160, 745);
         }
-        if (player2 != null) {
-            g2d.drawImage(image3, 450, 750, null);
-            g2d.drawString(player2, 455, 745);
-        }
-
-        if (player3 != null) {
-            g2d.drawImage(image4, 750, 750, null);
-            g2d.drawString(player3, 755, 745);
-        }
-
-        g2d.drawImage(image5, 1050, 750, null);
+//        if (player2 != null) {
+//            g2d.drawImage(image3, 450, 750, null);
+//            g2d.drawString(player2, 455, 745);
+//        }
+//
+//        if (player3 != null) {
+//            g2d.drawImage(image4, 750, 750, null);
+//            g2d.drawString(player3, 755, 745);
+//        }
+//
+//        g2d.drawImage(image5, 1050, 750, null);
     }
 
     public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state, GameState state1, GameState state2) {
         //g2d.drawImage(background, 0, 0, null);
         if (numOfPlayer > 0) {
             Tank tank = new Tank("tank_blue_RS.png");
-            taken=tank.getIcon();
+            taken = tank.getIcon();
             g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
 //            numOfPlayer--;
 
@@ -229,7 +232,7 @@ public class GameFrame extends JFrame {
     }
 
     public void drawMap(Graphics2D g2d) {
-        File accounts = new File("map5.txt");
+        File accounts = new File("map3.txt");
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
             int lineCounter = 0;
             int currentX = 30;
@@ -240,28 +243,23 @@ public class GameFrame extends JFrame {
                     if (lineCounter % 2 == 0) {
                         if (k % 2 == 0) {
                             if (chars[k] == '1') {
-                                Wall wall=new Wall(currentX,currentY,5,5,g2d,k);
-                                //System.out.println("black"+currentX+"-"+currentY);
+                                Wall wall = new Wall(currentX, currentY, 5, 5, g2d);
                                 walls.add(wall);
-                            }
-                            else if (chars[k] == '2') {
+
+                            } else if (chars[k] == '2') {
                                 g2d.setColor(Color.lightGray);
-                                //System.out.println("graye"+currentX+"-"+currentY);
-                                Wall wall=new Wall(currentX,currentY,5,5,g2d,k);
+                                Wall wall = new Wall(currentX, currentY, 5, 5, g2d);
                                 walls.add(wall);
                             }
                             g2d.setColor(Color.black);
                             currentX += 5;
                         } else {
                             if (chars[k] == '1') {
-                                Wall wall=new Wall(currentX,currentY,50,5,g2d,k);
-                                //System.out.println("black"+currentX+"-"+currentY);
+                                Wall wall = new Wall(currentX, currentY, 50, 5, g2d);
                                 walls.add(wall);
-                            }
-                            else if (chars[k] == '2') {
+                            } else if (chars[k] == '2') {
                                 g2d.setColor(Color.lightGray);
-                                //System.out.println("graye"+currentX+"-"+currentY);
-                                Wall wall=new Wall(currentX,currentY,50,5,g2d,k);
+                                Wall wall = new Wall(currentX, currentY, 50, 5, g2d);
                                 walls.add(wall);
                             }
                             g2d.setColor(Color.black);
@@ -271,14 +269,11 @@ public class GameFrame extends JFrame {
                     if (lineCounter % 2 != 0) {
                         if (k % 2 == 0) {
                             if (chars[k] == '1') {
-                                Wall wall=new Wall(currentX,currentY,5,50,g2d,k);
-                                //System.out.println("black"+currentX+"-"+currentY);
+                                Wall wall = new Wall(currentX, currentY, 5, 50, g2d);
                                 walls.add(wall);
-                            }
-                            else if (chars[k] == '2') {
+                            } else if (chars[k] == '2') {
                                 g2d.setColor(Color.lightGray);
-                                //System.out.println("graye"+currentX+"-"+currentY);
-                                Wall wall=new Wall(currentX,currentY,5,50,g2d,k);
+                                Wall wall = new Wall(currentX, currentY, 5, 50, g2d);
                                 walls.add(wall);
                             }
                             g2d.setColor(Color.black);
@@ -288,6 +283,7 @@ public class GameFrame extends JFrame {
                         }
                     }
                 }
+                allWallsAdded = true;
                 currentX = 30;
                 if (lineCounter % 2 == 0) currentY += 5;
                 else currentY += 50;
@@ -298,9 +294,55 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public void getColor(int x ,int y ) throws AWTException {
-        Robot robot=new Robot();
-        System.out.println(robot.getPixelColor(x,y));
+    public boolean checkWallAdded(int currentX, int currentY) {
+        String str = currentX + " " + currentY;
+        for (Wall wall : walls) {
+            if (wall.toString().equals(str)) return false;
+            else return true;
 
+        }
+        return true;
+    }
+
+    public void getColor(int x, int y) throws AWTException {
+        Robot robot = new Robot();
+        System.out.println(robot.getPixelColor(x, y));
+
+    }
+
+    public void setPrize(Graphics2D g2d) throws IOException {
+        long now = System.currentTimeMillis();
+        now = now / 1000;
+        int randNum= (int) (Math.random()*(5));
+        System.out.println(randNum);
+        if (now - startSec == 15) {
+            BufferedImage bullet2;
+            BufferedImage bullet3;
+            BufferedImage life;
+            BufferedImage laser;
+            BufferedImage shield;
+            bullet2 = ImageIO.read(new File("2B.png"));
+            bullet3 = ImageIO.read(new File("3B.png"));
+            life = ImageIO.read(new File("life.png"));
+            laser = ImageIO.read(new File("laser.png"));
+            shield = ImageIO.read(new File("shield.png"));
+            int x,y;
+//            if(randNum==0){
+//                g2d.drawImage(bullet2,,,null);
+//            }
+//            if(randNum==1){
+//                g2d.drawImage(bullet3,,,null);
+//            }
+//            if(randNum==2){
+//                g2d.drawImage(life,,,null);
+//            }
+//            if(randNum==3){
+//                g2d.drawImage(laser,,,null);
+//            }
+//            if(randNum==4){
+//                g2d.drawImage(shield,,,null);
+//            }
+        }
+        startSec = now;
     }
 }
