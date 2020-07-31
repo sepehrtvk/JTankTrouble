@@ -112,16 +112,16 @@ public class GameState {
         return null;
     }
 
-//    public Wall horizontalWallCollision() {
-//        for (Wall wall : Controller.walls) {
-//            if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-//                if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-//                    return wall;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    public Wall horizontalWallCollision() {
+        for (Wall wall : Controller.walls) {
+            if (wall.getWidth() == 50 && wall.getHeight() == 5) {
+                if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
+                    return wall;
+                }
+            }
+        }
+        return null;
+    }
 
     public boolean isMoveAllowed(int px) {
 
@@ -154,17 +154,17 @@ public class GameState {
             }
 
         }
-//        if (horizontalWallCollision() != null) {
-//            if (horizontalWallCollision().getY() > locY && px > 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
-//                return false;
-//            if (horizontalWallCollision().getY() < locY && px < 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
-//                return false;
-//            if (horizontalWallCollision().getY() < locY && px > 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
-//                return false;
-//            if (horizontalWallCollision().getY() > locY && px < 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
-//                return false;
-//
-//        }
+        if (horizontalWallCollision() != null) {
+            if (horizontalWallCollision().getY() > locY && px > 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
+                return false;
+            if (horizontalWallCollision().getY() < locY && px < 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
+                return false;
+            if (horizontalWallCollision().getY() < locY && px > 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
+                return false;
+            if (horizontalWallCollision().getY() > locY && px < 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
+                return false;
+
+        }
         return true;
     }
 
