@@ -29,6 +29,7 @@ public class SettingFrame extends JFrame {
 
         setVisible(true);
     }
+
     public void initUserInformationPanel() {
 
         userInformationPanel = new JPanel();
@@ -68,7 +69,9 @@ public class SettingFrame extends JFrame {
 
         add(userInformationPanel);
 
+
     }
+
     public void textAndLabel(String pngFile, String textField) {
 
         ImageIcon icon = new ImageIcon(pngFile);
@@ -84,6 +87,7 @@ public class SettingFrame extends JFrame {
         userInformationPanel.add(text);
 
     }
+
     public void initSettingPanel() {
 
         settingPanel = new JPanel();
@@ -104,6 +108,7 @@ public class SettingFrame extends JFrame {
         settingPanel.add(gameDetailsPanel, BorderLayout.NORTH);
         settingPanel.add(serverPanel, BorderLayout.CENTER);
     }
+
     public void initServerPanel() {
         JComboBox serverBox = new JComboBox();
         serverBox.addItem("Server 1");
@@ -138,8 +143,4 @@ public class SettingFrame extends JFrame {
         gameDetailsPanel.add(slider);
 
     }
-
-
-
-
 }

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 public class CreateNewGameFrame extends JFrame {
+
     private JPanel settingPanel;
     private JPanel gameDetailsPanel;
     private JPanel optionPanel;
@@ -49,7 +50,7 @@ public class CreateNewGameFrame extends JFrame {
         destructibleWallSlider = new JSlider(10, 100, 20);
         sliderAndIcon(tankHealthSlider, "pictures/tankHealth.png");
         sliderAndIcon(shotDamageSlider, "pictures/shotDamage.png");
-        sliderAndIcon(destructibleWallSlider, "pictures/DestructibleWall.png");
+        sliderAndIcon(destructibleWallSlider,"pictures/DestructibleWall.png");
 
         add(settingPanel);
         settingPanel.add(gameDetailsPanel, BorderLayout.CENTER);
@@ -136,6 +137,4 @@ public class CreateNewGameFrame extends JFrame {
             ex.printStackTrace();
         }
     }
-
-
 }
