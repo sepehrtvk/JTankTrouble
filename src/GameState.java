@@ -128,41 +128,56 @@ public class GameState {
         if (verticalWallCollision() != null) {
             if (verticalWallCollision().getX() > locX && px > 0) {
                 if ((rotateAmount <= 90 && rotateAmount >= -90) || (rotateAmount <= -270 && rotateAmount > -360) || (rotateAmount >= 270 && rotateAmount < 360)) {
-                    System.out.println("1");
                     return false;
                 } else return true;
 
             }
             if (verticalWallCollision().getX() < locX && px < 0) {
                 if ((rotateAmount <= 90 && rotateAmount >= -90) || (rotateAmount <= -270 && rotateAmount > -360) || (rotateAmount >= 270 && rotateAmount < 360)) {
-                    System.out.println("2");
                     return false;
                 } else return true;
             }
             if (verticalWallCollision().getX() > locX && px < 0) {
                 if ((rotateAmount >= 90 && rotateAmount <= 270) || (rotateAmount <= -90 && rotateAmount >= -270)) {
-                    System.out.println("3");
                     return false;
                 } else return true;
 
             }
             if (verticalWallCollision().getX() < locX && px > 0) {
                 if ((rotateAmount >= 90 || rotateAmount <= 270) || (rotateAmount <= -90 && rotateAmount >= -270)) {
-                    System.out.println("4");
                     return false;
                 } else return true;
             }
 
         }
         if (horizontalWallCollision() != null) {
-            if (horizontalWallCollision().getY() > locY && px > 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
-                return false;
-            if (horizontalWallCollision().getY() < locY && px < 0 && ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)))
-                return false;
-            if (horizontalWallCollision().getY() < locY && px > 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
-                return false;
-            if (horizontalWallCollision().getY() > locY && px < 0 && ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)))
-                return false;
+            if (horizontalWallCollision().getY() > locY && px > 0) {
+                if ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)) {
+                    System.out.println("1");
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() < locY && px < 0) {
+                if ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)) {
+                    System.out.println("2");
+
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() < locY && px > 0) {
+                if ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)) {
+                    System.out.println("3");
+
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() > locY && px < 0) {
+                if ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)) {
+                    System.out.println("4");
+
+                    return false;
+                } else return true;
+            }
 
         }
         return true;
