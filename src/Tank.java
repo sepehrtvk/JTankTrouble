@@ -12,8 +12,11 @@ public class Tank {
     BufferedImage icon;
     Bullets bullets;
     GameState state;
+    int Health;
+    Prize prize;
 
     public Tank(String path){
+        Health=100;
         try {
             icon = ImageIO.read(new File(path));
         }
@@ -38,5 +41,21 @@ public class Tank {
 
     public GameState getState() {
         return state;
+    }
+
+    public double getRotateAmount() {
+        return rotateAmount;
+    }
+
+    public Bullets getBullets() {
+        return bullets;
+    }
+
+    public int getHealth() {
+        return Health;
+    }
+
+    public void setHealth(int healthDamage) {
+        Health = Health-healthDamage;
     }
 }
