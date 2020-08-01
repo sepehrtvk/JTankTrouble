@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 public class OnlineModeFrame extends JFrame {
+
     private JComboBox serverBox;
     private JPanel serverChoosePanel;
     private JPanel gamesPanel;
@@ -98,6 +99,4 @@ public class OnlineModeFrame extends JFrame {
             new CreateNewGameFrame("Make A New Game");
         }
     }
-
-
 }

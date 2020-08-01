@@ -35,20 +35,6 @@ public class LoginFrame extends JFrame {
 
     }
 
-    public void initInformationPanel() {
-
-        informationPanel = new JPanel();
-        informationPanel.setOpaque(true);
-        informationPanel.setBorder(new LineBorder(Color.DARK_GRAY));
-        informationPanel.setLayout(new GridLayout(3, 1));
-        informationPanel.add(userName);
-        informationPanel.add(passwordField);
-        informationPanel.add(remindMe);
-
-        add(informationPanel, BorderLayout.CENTER);
-
-    }
-
     public void initLoginFrame() {
 
         tankPhoto = new ImageIcon("gifFiles/gif.gif");
@@ -81,6 +67,20 @@ public class LoginFrame extends JFrame {
 
     }
 
+    public void initInformationPanel() {
+
+        informationPanel = new JPanel();
+        informationPanel.setOpaque(true);
+        informationPanel.setBorder(new LineBorder(Color.DARK_GRAY));
+        informationPanel.setLayout(new GridLayout(3, 1));
+        informationPanel.add(userName);
+        informationPanel.add(passwordField);
+        informationPanel.add(remindMe);
+
+        add(informationPanel, BorderLayout.CENTER);
+
+    }
+
     public void initRemindMe() {
         File accounts = new File("Accounts.txt");
         try (Scanner scanner = new Scanner(new FileReader(accounts))) {
@@ -96,6 +96,28 @@ public class LoginFrame extends JFrame {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    class SignUpAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            File accounts = new File("Accounts.txt");
+            try (Scanner scanner = new Scanner(new FileReader(accounts))) {
+                String account = "";
+                while (scanner.hasNextLine()) {
+                    account = scanner.nextLine() + "\n";
+                }
+                if (account.contains(userName.getText())) {
+                    JFrame userFound = new JFrame();
+                    JOptionPane.showMessageDialog(userFound, "This User already exists ! ", "", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    signUpUser(accounts);
+                }
+
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
         }
     }
 
@@ -145,28 +167,5 @@ public class LoginFrame extends JFrame {
             signInUser();
         }
     }
-
-    class SignUpAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            File accounts = new File("Accounts.txt");
-            try (Scanner scanner = new Scanner(new FileReader(accounts))) {
-                String account = "";
-                while (scanner.hasNextLine()) {
-                    account = scanner.nextLine() + "\n";
-                }
-                if (account.contains(userName.getText())) {
-                    JFrame userFound = new JFrame();
-                    JOptionPane.showMessageDialog(userFound, "This User already exists ! ", "", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    signUpUser(accounts);
-                }
-
-            } catch (Exception ee) {
-                ee.printStackTrace();
-            }
-        }
-    }
-
 
 }

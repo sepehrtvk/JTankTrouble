@@ -71,7 +71,8 @@ public class GameLoop implements Runnable {
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
 				if (delay > 0)
 					Thread.sleep(delay);
-			} catch (InterruptedException | IOException | AWTException ex) {
+			} catch (Exception ee) {
+				ee.printStackTrace();
 			}
 		}
 		try {
