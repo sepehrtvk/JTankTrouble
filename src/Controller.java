@@ -9,4 +9,6 @@ public class Controller {
     public static BufferedImage taken;
     public static int row;
     public static int col;
+    public static  ArrayList<Prize> prizes;
+    public static boolean getPrize;
 }
