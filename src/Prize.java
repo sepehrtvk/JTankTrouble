@@ -31,6 +31,10 @@ public class Prize {
         return width;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getHeight() {
         return height;
     }
