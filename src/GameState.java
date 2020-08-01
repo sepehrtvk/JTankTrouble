@@ -141,15 +141,14 @@ public class GameState {
                     move(-5);
                     break;
                 }
-
-
-            for(Prize prize:Controller.prizes){
-                if((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
-                    Controller.getPrize=true;
-                }
+        }
+        for(Prize prize:Controller.prizes){
+            if((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
+                Controller.getPrize=true;
+               // System.out.println("get");
+                System.out.println(prize.getName());
             }
         }
-
 
         if (keyLEFT)
             rotateAmount -= 15;
