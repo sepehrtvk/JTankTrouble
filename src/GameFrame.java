@@ -1,7 +1,10 @@
 /*** In The Name of Allah ***/
 
 import javax.imageio.ImageIO;
+import javax.sound.midi.Soundbank;
+import javax.sound.sampled.*;
 import javax.swing.*;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,14 +41,29 @@ public class GameFrame extends JFrame {
     private BufferedImage image5;
     private BufferedImage background;
     private BufferedImage taken;
+    public BufferedImage bullet2;
+    public BufferedImage bullet3;
+    public BufferedImage life;
+    public BufferedImage laser;
+    public BufferedImage shield;
+    public ArrayList<Integer> prizeLoc;
+    public int realMapSize;
     public int row;
     public int col;
     long start = System.currentTimeMillis();
     long startSec = start / 1000;
+    public  long renderCount = 0;
+    public long renderCountLimit = 0;
+    int lastX = 120;
+    int lastY = 120;
+    boolean firstPrize = true;
+    boolean getPrize=false;
+    public BufferedImage lastPrize;
 
     private Graphics2D g2d;
     private BufferStrategy bufferStrategy;
     private ArrayList<Wall> walls;
+    private ArrayList<Prize> prizes;
     private boolean allWallsAdded = false;
 
     public GameFrame(String title) throws AWTException, IOException {
@@ -59,8 +77,11 @@ public class GameFrame extends JFrame {
         Controller.walls = walls;
         Controller.g2d = g2d;
         Controller.taken = taken;
+        prizeLoc = new ArrayList<>();
+        prizes=new ArrayList<>();
+        Controller.prizes=prizes;
+        Controller.getPrize=getPrize;
 
-        setPrize(g2d);
 
         try {
             image1 = ImageIO.read(new File("Tank_dark.png"));
@@ -69,6 +90,11 @@ public class GameFrame extends JFrame {
             image4 = ImageIO.read(new File("Tank_green.png"));
             image5 = ImageIO.read(new File("Tank_sand.png"));
             background = ImageIO.read(new File("background.png"));
+            bullet2 = ImageIO.read(new File("2B.png"));
+            bullet3 = ImageIO.read(new File("3B.png"));
+            life = ImageIO.read(new File("life.png"));
+            laser = ImageIO.read(new File("laser.png"));
+            shield = ImageIO.read(new File("shield.png"));
 
         } catch (IOException e) {
             System.out.println(e);
@@ -150,7 +176,8 @@ public class GameFrame extends JFrame {
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2) {
+    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2) throws IOException {
+        renderCount++;
         // Draw background
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -161,15 +188,12 @@ public class GameFrame extends JFrame {
         g2d.fillRect(0, 720, 1280, 160);
         // g2d.drawImage(image1,state.locX,state.locY,null);
         g2d.setColor(Color.black);
-
         //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
         setTanks(3, g2d, state, state1, state2);
-
         setName(g2d, "narges", "sara", "bardia");
-
         setMap(g2d, new File("map3.txt"));
-
         drawMap(g2d);
+        setPrize(g2d);
 
     }
 
@@ -279,7 +303,12 @@ public class GameFrame extends JFrame {
                             g2d.setColor(Color.black);
                             currentX += 5;
                         } else {
+                            if (firstPrize) {
+                                prizeLoc.add(currentX + 25);
+                                prizeLoc.add(currentY + 25);
+                            }
                             currentX += 50;
+
                         }
                     }
                 }
@@ -291,6 +320,9 @@ public class GameFrame extends JFrame {
             }
         } catch (Exception ee) {
             ee.printStackTrace();
+        }
+        if (firstPrize) {
+            realMapSize = prizeLoc.size();
         }
     }
 
@@ -310,39 +342,60 @@ public class GameFrame extends JFrame {
 
     }
 
-    public void setPrize(Graphics2D g2d) throws IOException {
-        long now = System.currentTimeMillis();
-        now = now / 1000;
-        int randNum= (int) (Math.random()*(5));
-        System.out.println(randNum);
-        if (now - startSec == 15) {
-            BufferedImage bullet2;
-            BufferedImage bullet3;
-            BufferedImage life;
-            BufferedImage laser;
-            BufferedImage shield;
-            bullet2 = ImageIO.read(new File("2B.png"));
-            bullet3 = ImageIO.read(new File("3B.png"));
-            life = ImageIO.read(new File("life.png"));
-            laser = ImageIO.read(new File("laser.png"));
-            shield = ImageIO.read(new File("shield.png"));
-            int x,y;
-//            if(randNum==0){
-//                g2d.drawImage(bullet2,,,null);
-//            }
-//            if(randNum==1){
-//                g2d.drawImage(bullet3,,,null);
-//            }
-//            if(randNum==2){
-//                g2d.drawImage(life,,,null);
-//            }
-//            if(randNum==3){
-//                g2d.drawImage(laser,,,null);
-//            }
-//            if(randNum==4){
-//                g2d.drawImage(shield,,,null);
-//            }
+    /**
+     * Draw prize randomly
+     *
+     * @param g2d graphic2D of game
+     * @throws IOException
+     */
+    public void setPrize(Graphics2D g2d)  {
+        int randomLoc = (int) (Math.random() * (realMapSize));
+        int randomNum = (int) (Math.random() * (5));
+
+        if (randomLoc % 2 != 0)
+            randomLoc = randomLoc - 1;
+        if (firstPrize) {
+            g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+            prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),15,15,bullet2.toString()));
+            firstPrize = false;
+            lastX = prizeLoc.get(randomLoc);
+            lastY = prizeLoc.get(randomLoc + 1);
+            renderCountLimit = renderCount + 180;
+            lastPrize = bullet2;
+        } else if (renderCount != renderCountLimit && !Controller.getPrize) {
+            g2d.drawImage(lastPrize, lastX, lastY, null);
+        } else {
+            Controller.getPrize=false;
+            if(randomNum==1) {
+                g2d.drawImage(shield, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+                prizes.clear();
+                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,shield.toString()));
+                lastPrize = shield;
+            } if(randomNum==0) {
+                g2d.drawImage(life, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+                prizes.clear();
+                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,life.toString()));
+                lastPrize = life;
+            } if(randomNum==3) {
+                g2d.drawImage(bullet3, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+                prizes.clear();
+                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,bullet3.toString()));
+                lastPrize = bullet3;
+            } if(randomNum==2) {
+                g2d.drawImage(laser, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+                prizes.clear();
+                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,laser.toString()));
+                lastPrize = laser;
+            } if(randomNum==4) {
+                g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
+                prizes.clear();
+                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,bullet2.toString()));
+                lastPrize = bullet2;
+            }
+            lastX = prizeLoc.get(randomLoc);
+            lastY = prizeLoc.get(randomLoc + 1);
+            renderCountLimit = renderCount + 180;
         }
-        startSec = now;
     }
 }
+
