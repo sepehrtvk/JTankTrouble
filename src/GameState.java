@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -363,6 +364,35 @@ public class GameState {
                 d = r + 90;
                 bullet.x += px * Math.sin(d * Math.PI / 180);
                 bullet.y -= px * Math.cos(d * Math.PI / 180);
+            }
+        }
+    }
+    public void bulletCollision(Bullet bullet) {
+        for (Wall wall : Controller.walls) {
+            Rectangle rectangle = new Rectangle(wall.getX(), wall.getY(), wall.getWidth(), wall.getHeight());
+            Ellipse2D ellipse2D = new Ellipse2D.Double(bullet.x, bullet.y, 7, 7);
+            if (ellipse2D.intersects(rectangle)) {
+                new AudioPlayer("sound effects/select.wav", 0);
+                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
+                    if ((rotateAmountBullet >= 0 && rotateAmountBullet <= 180) || (rotateAmountBullet <= -180 && rotateAmountBullet > -360)) {
+                        rotateAmountBullet = -rotateAmountBullet - 180;
+                        break;
+                    } else {
+                        rotateAmountBullet = 180 - rotateAmountBullet;
+                        break;
+                    }
+                } else if (wall.getWidth() == 50 && wall.getHeight() == 5) {
+                    rotateAmountBullet = -rotateAmountBullet;
+                    break;
+                } else if (wall.getWidth() == 5 && wall.getHeight() == 5) {
+                    if ((rotateAmountBullet >= 0 && rotateAmountBullet <= 180) || (rotateAmountBullet <= -180 && rotateAmountBullet > -360)) {
+                        rotateAmountBullet = 180 - rotateAmountBullet;
+                        break;
+                    } else {
+                        rotateAmountBullet = -rotateAmountBullet;
+                        break;
+                    }
+                }
             }
         }
     }
