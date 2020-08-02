@@ -396,6 +396,21 @@ public class GameState {
             }
         }
     }
+    public void checkTankDestroyed(Tank tankToCheck, Bullet bullet) {
+        Rectangle rectangle = new Rectangle(tankToCheck.getX(), tankToCheck.getY(), 25, 25);
+        Ellipse2D ellipse2D = new Ellipse2D.Double(bullet.x, bullet.y, 7, 7);
+        if (ellipse2D.intersects(rectangle)) {
+            new AudioPlayer("sound effects/enemydestroyed.wav", 0);
+
+            Controller.tanks.remove(tankToCheck);
+            tankToCheck.alive = false;
+            bullet.alive = false;
+            rotateAmountTank = 0;
+            bulletTime = 61;
+
+        }
+    }
+
     public void fire(Graphics2D g2d) {
         if (keyM && Controller.tanks.size() > 0) {
             if (rotateAmountBullet >= 360 || rotateAmountBullet <= -360) rotateAmountBullet = 0;
