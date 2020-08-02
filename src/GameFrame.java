@@ -193,6 +193,7 @@ public class GameFrame extends JFrame {
         g2d.setColor(Color.black);
         //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
         setTanks(3, g2d, state, state1, state2);
+        setEnemy(g2d);
         setName(g2d, "narges", "sara", "bardia");
         setMap(g2d, new File("map3.txt"));
         drawMap(g2d);
@@ -239,6 +240,12 @@ public class GameFrame extends JFrame {
 //        g2d.drawImage(image5, 1050, 750, null);
     }
 
+    public void setEnemy(Graphics2D g2d){
+        Tank tank = new Tank("enemy.png");
+        taken = tank.getIcon();
+        tanks.add(tank);
+        g2d.drawImage(tank.getIcon(), 200, 200, null);
+    }
     public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state, GameState state1, GameState state2) {
         //g2d.drawImage(background, 0, 0, null);
         if (numOfPlayer > 0) {
