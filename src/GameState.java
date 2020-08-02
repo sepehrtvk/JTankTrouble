@@ -33,9 +33,9 @@ public class GameState {
     private boolean two = false;
     private boolean three = false;
     private int step = 0;
-    boolean PermissionUp = true;
-    boolean PermissionDown = true;
-    boolean check = true;
+    public double rotateAmountTank;
+    public double rotateAmountBullet;
+    private int bulletTime = 0;
 
 
     public GameState(int num) {
@@ -84,70 +84,13 @@ public class GameState {
 
 
         if (keyUP) {
-            PermissionUp = true;
-            for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        //&&
-                        //                            ((rotateAmount == 0 && locX < wall.getX()) || ((rotateAmount == 180 || rotateAmount == -180) && locX > wall.getX()))
-                        PermissionUp = false;
-                        break;
-                    }
-                }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        // &&
-                        //                            (((rotateAmount == +90 || rotateAmount == -270) && locY < wall.getY()) || (((rotateAmount == -90 || rotateAmount == -270) && locY > wall.getY())))
-                        PermissionUp = false;
-                        break;
-                    }
-                }
-            }
-            if (PermissionUp)
-                move(+5);
-            for (Wall wall : Controller.walls)
-                if (!PermissionDown && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
-                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
-                    move(+5);
-                    break;
-                }
+            move(+5);
         }
 
         if (keyDOWN) {
-            PermissionDown = true;
-            for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        //&&
-                        //                            ((((rotateAmount == 0) || locX >= wall.getX())) || (((rotateAmount == -180 || rotateAmount == 180) && locX <= wall.getX())))
-                        PermissionDown = false;
-                        break;
-                    }
-                }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        // &&
-                        //                            (((rotateAmount == -90 || rotateAmount == 270) && locY<wall.getY()))|| (((rotateAmount==90||rotateAmount==-270)&& locY>wall.getY()))
-                        PermissionDown = false;
-                        break;
-                    }
-                }
-            }
-            if (PermissionDown)
-                move(-5);
-            for (Wall wall : Controller.walls)
-                if (!PermissionUp && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
-                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
-                    move(-5);
-                    break;
-                }
+            move(-5);
         }
-        for(Prize prize:Controller.prizes){
-            if((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
-                Controller.getPrize=true;
-                Controller.tanks.get(0).setPrize(prize.getName());
-            }
-        }
+
 
         if (keyLEFT)
             rotateAmount -= 15;
@@ -162,8 +105,92 @@ public class GameState {
         locY = Math.min(locY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
     }
 
+    public Wall verticalWallCollision() {
+        for (Wall wall : Controller.walls) {
+            if (wall.getWidth() == 5 && wall.getHeight() == 50) {
+                if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
+                    return wall;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Wall horizontalWallCollision() {
+        for (Wall wall : Controller.walls) {
+            if (wall.getWidth() == 50 && wall.getHeight() == 5) {
+                if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
+                    return wall;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isMoveAllowed(int px) {
+
+        if (verticalWallCollision() != null) {
+            if (verticalWallCollision().getX() > locX && px > 0) {
+                if ((rotateAmount <= 90 && rotateAmount >= -90) || (rotateAmount <= -270 && rotateAmount > -360) || (rotateAmount >= 270 && rotateAmount < 360)) {
+                    return false;
+                } else return true;
+
+            }
+            if (verticalWallCollision().getX() < locX && px < 0) {
+                if ((rotateAmount <= 90 && rotateAmount >= -90) || (rotateAmount <= -270 && rotateAmount > -360) || (rotateAmount >= 270 && rotateAmount < 360)) {
+                    return false;
+                } else return true;
+            }
+            if (verticalWallCollision().getX() > locX && px < 0) {
+                if ((rotateAmount >= 90 && rotateAmount <= 270) || (rotateAmount <= -90 && rotateAmount >= -270)) {
+                    return false;
+                } else return true;
+
+            }
+            if (verticalWallCollision().getX() < locX && px > 0) {
+                if ((rotateAmount >= 90 || rotateAmount <= 270) || (rotateAmount <= -90 && rotateAmount >= -270)) {
+                    return false;
+                } else return true;
+            }
+
+        }
+        if (horizontalWallCollision() != null) {
+            if (horizontalWallCollision().getY() > locY && px > 0) {
+                if ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)) {
+                    System.out.println("1");
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() < locY && px < 0) {
+                if ((rotateAmount <= 180 && rotateAmount >= 0) || (rotateAmount <= -180 && rotateAmount > -360)) {
+                    System.out.println("2");
+
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() < locY && px > 0) {
+                if ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)) {
+                    System.out.println("3");
+
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollision().getY() > locY && px < 0) {
+                if ((rotateAmount >= -180 && rotateAmount <= 0) || (rotateAmount >= 180 && rotateAmount < 360)) {
+                    System.out.println("4");
+
+                    return false;
+                } else return true;
+            }
+
+        }
+        return true;
+    }
+
     public void move(int px) {
         double d;
+
+        if (!isMoveAllowed(px)) px = 0;
 
         if (rotateAmount == 0) locX += px;
         if (rotateAmount == 90 || rotateAmount == -270) locY += px;
@@ -217,16 +244,71 @@ public class GameState {
         }
 
     }
-
-    public void checkWall() {
-        for (Wall wall : Controller.walls) {
-            if (wall.getX() == locX + 5 || wall.getY() == locY + 5) {
-                keyDOWN = false;
-            } else if (wall.getX() == locX - 5 || wall.getY() == locY - 5) {
-                keyUP = false;
+    public int calculateBullet(String xy) {
+        int x = locX;
+        int y = locY;
+        if (rotateAmountTank == 0) {
+            if (xy.equals("x")) {
+                x += 20;
+                return x;
+            } else {
+                y += 10;
+                return y;
             }
         }
+        if (rotateAmountTank == 90 || rotateAmountTank == -270) {
+            if (xy.equals("x")) {
+                x += 9;
+                return x;
+            } else {
+                return y + 20;
+            }
+        }
+        if (rotateAmountTank == -90 || rotateAmountTank == 270) {
+            if (xy.equals("x")) {
+                x += 9;
+                return x;
+            } else {
+                return y - 20;
+            }
+        }
+        if (rotateAmountTank == 180 || rotateAmountTank == -180) {
+            if (xy.equals("x")) {
+                return x;
+            } else {
+                y += 10;
+                return y;
+            }
+        }
+        if ((rotateAmountTank > 0 && rotateAmountTank < 90) || (rotateAmountTank < -270 && rotateAmountTank > -360)) {
+            x += 10 * Math.sin(rotateAmountTank * Math.PI / 180);
+            y += 10 * Math.cos(rotateAmountTank * Math.PI / 180);
+            if (xy.equals("x")) return x;
+            else return y;
+        }
+        if ((rotateAmountTank > 180 && rotateAmountTank < 270) || (rotateAmountTank < -90 && rotateAmountTank > -180)) {
+            x -= 10 * Math.sin(rotateAmountTank * Math.PI / 180);
+            y -= 10 * Math.cos(rotateAmountTank * Math.PI / 180);
+            if (xy.equals("x")) return x;
+            else return y;
+
+        }
+        if ((rotateAmountTank > 90 && rotateAmountTank < 180) || (rotateAmountTank < -180 && rotateAmountTank > -270)) {
+            x += 25 * Math.sin(rotateAmountTank * Math.PI / 180);
+            y -= 20 * Math.cos(rotateAmountTank * Math.PI / 180);
+            if (xy.equals("x")) return x;
+            else return y;
+        }
+        if ((rotateAmountTank > 270 && rotateAmountTank < 360) || (rotateAmountTank < 0 && rotateAmountTank > -90)) {
+            x += 20 * Math.cos(rotateAmountTank * Math.PI / 180);
+            y -= 25 * Math.sin(rotateAmountTank * Math.PI / 180);
+            if (xy.equals("x")) return x;
+            else return y;
+
+        }
+        return 0;
     }
+
 
     public KeyListener getKeyListener() {
         return keyHandler;
