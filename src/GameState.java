@@ -108,9 +108,9 @@ public class GameState {
             for (Wall wall : Controller.walls)
                 if (!PermissionDown && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
                         !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
-                move(+5);
-                break;
-            }
+                    move(+5);
+                    break;
+                }
         }
 
         if (keyDOWN) {
@@ -145,8 +145,6 @@ public class GameState {
         for(Prize prize:Controller.prizes){
             if((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
                 Controller.getPrize=true;
-               // System.out.println("get");
-                System.out.println(prize.getName());
             }
         }
 
