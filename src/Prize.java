@@ -8,8 +8,14 @@ public class Prize {
     int x;
     int y;
     int width;
+
+    public boolean CheckExpiration() {
+        return checkExpiration;
+    }
+
     int height;
     String name;
+    boolean checkExpiration=false;
 
     public Prize(int x, int y, int width, int height, String name) {
         this.x = x;
