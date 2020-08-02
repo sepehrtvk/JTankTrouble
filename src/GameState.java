@@ -396,6 +396,34 @@ public class GameState {
             }
         }
     }
+    public void fire(Graphics2D g2d) {
+        if (keyM && Controller.tanks.size() > 0) {
+            if (rotateAmountBullet >= 360 || rotateAmountBullet <= -360) rotateAmountBullet = 0;
+
+            Bullet bullet = new Bullet(calculateBullet("x"), calculateBullet("y"), rotateAmountBullet, 30);
+            bullets.add(bullet);
+            bulletCollision(bullets.get(0));
+
+            shotBullet(8, bullets.get(0));
+            g2d.fillOval(bullets.get(0).x, bullets.get(0).y, 7, 7);
+
+            if (bullets.size() > 5 && Controller.tanks.size() > 0)
+                checkTankDestroyed(Controller.tanks.get(0), bullets.get(0));
+
+            if (bulletTime > 60) {
+
+                bullets.get(0).x = calculateBullet("x");
+                bullets.get(0).y = calculateBullet("y");
+                bullets.get(0).rotateAmountBullet = rotateAmountTank;
+                bullets.clear();
+                keyM = false;
+                bulletTime = 0;
+
+            }
+            bulletTime++;
+
+        }
+    }
 
 
 
