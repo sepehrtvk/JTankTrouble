@@ -12,30 +12,37 @@ public class Tank {
     BufferedImage icon;
     Bullets bullets;
     GameState state;
+    String prize;
     int Health;
-    Prize prize;
 
-    public Tank(String path){
-        Health=100;
+    public String getPrize() {
+        return prize;
+    }
+
+    public void setPrize(String prize) {
+        this.prize = prize;
+    }
+
+    public Tank(String path) {
+        Health = 100;
         try {
             icon = ImageIO.read(new File(path));
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println("File not found ");
         }
 
-        bullets=new Bullets();
+        bullets = new Bullets();
     }
 
-    public BufferedImage getIcon(){
+    public BufferedImage getIcon() {
         return icon;
     }
 
-    public int getX(){
+    public int getX() {
         return x;
     }
 
-    public int getY(){
+    public int getY() {
         return y;
     }
 
@@ -56,6 +63,6 @@ public class Tank {
     }
 
     public void setHealth(int healthDamage) {
-        Health = Health-healthDamage;
+        Health = Health - healthDamage;
     }
 }
