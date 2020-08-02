@@ -145,6 +145,7 @@ public class GameState {
         for(Prize prize:Controller.prizes){
             if((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
                 Controller.getPrize=true;
+                Controller.tanks.get(0).setPrize(prize.getName());
             }
         }
 
