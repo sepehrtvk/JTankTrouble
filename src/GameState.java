@@ -308,6 +308,65 @@ public class GameState {
         }
         return 0;
     }
+    public void shotBullet(int px, Bullet bullet) {
+
+        double d;
+        double r = rotateAmountBullet;
+
+        if (r == 0) bullet.x += px;
+        if (r == 90 || r == -270) bullet.y += px;
+        if (r == -90 || r == 270) bullet.y -= px;
+        if (r == 180 || r == -180) bullet.x -= px;
+
+        if ((r > 0 && r < 90) || (r < -270 && r > -360)) {
+            if (px > 0) {
+                bullet.x += px * Math.cos(r * Math.PI / 180);
+                bullet.y += px * Math.sin(r * Math.PI / 180);
+            } else {
+                bullet.x += px * Math.cos(r * Math.PI / 180);
+                bullet.y += px * Math.sin(r * Math.PI / 180);
+            }
+        }
+
+        if ((r > 90 && r < 180) || (r < -180 && r > -270)) {
+            if (px > 0) {
+                d = r - 90;
+                bullet.x -= px * Math.sin(d * Math.PI / 180);
+                bullet.y += px * Math.cos(d * Math.PI / 180);
+            } else {
+                d = r + 270;
+                bullet.x -= px * Math.sin(d * Math.PI / 180);
+                bullet.y += px * Math.cos(d * Math.PI / 180);
+            }
+        }
+
+        if ((r > 180 && r < 270) || (r < -90 && r > -180)) {
+
+            if (px > 0) {
+                d = r - 180;
+                bullet.x -= px * Math.cos(d * Math.PI / 180);
+                bullet.y -= px * Math.sin(d * Math.PI / 180);
+            } else {
+                d = r + 180;
+                bullet.x -= px * Math.cos(d * Math.PI / 180);
+                bullet.y -= px * Math.sin(d * Math.PI / 180);
+            }
+        }
+
+        if ((r > 270 && r < 360) || (r < 0 && r > -90)) {
+
+            if (px > 0) {
+                d = r - 270;
+                bullet.x += px * Math.sin(d * Math.PI / 180);
+                bullet.y -= px * Math.cos(d * Math.PI / 180);
+            } else {
+                d = r + 90;
+                bullet.x += px * Math.sin(d * Math.PI / 180);
+                bullet.y -= px * Math.cos(d * Math.PI / 180);
+            }
+        }
+    }
+
 
 
     public KeyListener getKeyListener() {
