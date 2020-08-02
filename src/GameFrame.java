@@ -64,6 +64,7 @@ public class GameFrame extends JFrame {
     private BufferStrategy bufferStrategy;
     private ArrayList<Wall> walls;
     private ArrayList<Prize> prizes;
+    private ArrayList<Tank> tanks;
     private boolean allWallsAdded = false;
 
     public GameFrame(String title) throws AWTException, IOException {
@@ -81,6 +82,8 @@ public class GameFrame extends JFrame {
         prizes=new ArrayList<>();
         Controller.prizes=prizes;
         Controller.getPrize=getPrize;
+        tanks=new ArrayList<>();
+        Controller.tanks=tanks;
 
 
         try {
@@ -221,6 +224,7 @@ public class GameFrame extends JFrame {
             g2d.drawImage(image2, 150, 750, null);
             player1 = "narges";
             g2d.drawString(player1, 160, 745);
+            g2d.drawString(String.valueOf(tanks.get(0).getHealth()),160,850);
         }
 //        if (player2 != null) {
 //            g2d.drawImage(image3, 450, 750, null);
@@ -240,6 +244,7 @@ public class GameFrame extends JFrame {
         if (numOfPlayer > 0) {
             Tank tank = new Tank("tank_blue_RS.png");
             taken = tank.getIcon();
+            tanks.add(tank);
             g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
 //            numOfPlayer--;
 
