@@ -119,7 +119,7 @@ public class GameFrame extends JFrame {
     /**
      * Game rendering with triple-buffering using BufferStrategy.
      */
-    public void render(GameState state1, GameState state, GameState state2) throws IOException {
+    public void render(GameState state) throws IOException {
         // Render single frame
         do {
             // The following loop ensures that the contents of the drawing buffer
@@ -129,7 +129,7 @@ public class GameFrame extends JFrame {
                 // to make sure the strategy is validated
                 Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
                 try {
-                    doRendering(graphics, state1, state, state2);
+                    doRendering(graphics, state);
 
                 } finally {
                     // Dispose the graphics
@@ -179,7 +179,7 @@ public class GameFrame extends JFrame {
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state, GameState state1, GameState state2) throws IOException {
+    private void doRendering(Graphics2D g2d, GameState state) throws IOException {
         renderCount++;
         // Draw background
         g2d.setColor(Color.white);
@@ -192,8 +192,8 @@ public class GameFrame extends JFrame {
         // g2d.drawImage(image1,state.locX,state.locY,null);
         g2d.setColor(Color.black);
         //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
-        setTanks(3, g2d, state, state1, state2);
-        setEnemy(g2d);
+        setTanks(3, g2d, state);
+        setEnemy(g2d,state);
         setName(g2d, "narges", "sara", "bardia");
         setMap(g2d, new File("map3.txt"));
         drawMap(g2d);
@@ -240,13 +240,14 @@ public class GameFrame extends JFrame {
 //        g2d.drawImage(image5, 1050, 750, null);
     }
 
-    public void setEnemy(Graphics2D g2d){
+    public void setEnemy(Graphics2D g2d,GameState state){
         Tank tank = new Tank("enemy.png");
         taken = tank.getIcon();
         tanks.add(tank);
-        g2d.drawImage(tank.getIcon(), 200, 200, null);
+        g2d.drawImage(rotate(tank.getIcon(),state.rotateAmountPC),state.pcX,state.pcY, null);
+//        System.out.println(pcState.pcX+" "+pcState.pcY);
     }
-    public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state, GameState state1, GameState state2) {
+    public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state) {
         //g2d.drawImage(background, 0, 0, null);
         if (numOfPlayer > 0) {
             Tank tank = new Tank("tank_blue_RS.png");
@@ -254,7 +255,7 @@ public class GameFrame extends JFrame {
             tanks.add(tank);
             g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
 //            numOfPlayer--;
-
+//
 //            if (numOfPlayer > 0) {
 //                Tank tank1 = new Tank("tank_green_RS.png");
 //                g2d.drawImage(rotate(tank1.getIcon(), state1.rotateAmount), state1.locX, state1.locY, null);
@@ -372,7 +373,7 @@ public class GameFrame extends JFrame {
             firstPrize = false;
             lastX = prizeLoc.get(randomLoc);
             lastY = prizeLoc.get(randomLoc + 1);
-            renderCountLimit = renderCount + 180;
+            renderCountLimit = renderCount + 300;
             lastPrize = bullet2;
         } else if (renderCount != renderCountLimit && !Controller.getPrize) {
             g2d.drawImage(lastPrize, lastX, lastY, null);
@@ -406,7 +407,7 @@ public class GameFrame extends JFrame {
             }
             lastX = prizeLoc.get(randomLoc);
             lastY = prizeLoc.get(randomLoc + 1);
-            renderCountLimit = renderCount + 180;
+            renderCountLimit = renderCount + 300;
         }
     }
 }
