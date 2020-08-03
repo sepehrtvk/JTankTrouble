@@ -339,21 +339,7 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public boolean checkWallAdded(int currentX, int currentY) {
-        String str = currentX + " " + currentY;
-        for (Wall wall : walls) {
-            if (wall.toString().equals(str)) return false;
-            else return true;
 
-        }
-        return true;
-    }
-
-    public void getColor(int x, int y) throws AWTException {
-        Robot robot = new Robot();
-        System.out.println(robot.getPixelColor(x, y));
-
-    }
 
     /**
      * Draw prize randomly
