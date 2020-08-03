@@ -29,8 +29,9 @@ public class GameLoop implements Runnable {
 	private GameFrame canvas;
 	private GameState state;
 	//state for other player
-	private GameState state1;
-	private GameState state2;
+	//private GameState state1;
+	//private GameState state2;
+	//private GameState pcState;
 
 	public GameLoop(GameFrame frame) {
 		canvas = frame;
@@ -41,8 +42,9 @@ public class GameLoop implements Runnable {
 	 */
 	public void init() {
 		state = new GameState(1);
-		state1 = new GameState(2);
-		state2 = new GameState(3);
+		//state1 = new GameState(2);
+		//state2 = new GameState(3);
+		//pcState=new GameState(4);
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
@@ -57,14 +59,16 @@ public class GameLoop implements Runnable {
 	@Override
 	public void run() {
 		boolean gameOver = false;
-		while (!gameOver) {
+		while (!gameOver)  {
 			try {
 				long start = System.currentTimeMillis();
 				//
 				state.update();
+				state.pcUpdate();
+				//pcState.pcUpdate();
 //				state1.update();
 //				state2.update();
-				canvas.render(state,state2,state1);
+				canvas.render(state);
 
 				gameOver = state.gameOver;
 				//
@@ -76,7 +80,7 @@ public class GameLoop implements Runnable {
 			}
 		}
 		try {
-			canvas.render(state,state1,state2);
+			canvas.render(state);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
