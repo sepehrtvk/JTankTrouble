@@ -1,21 +1,16 @@
 /*** In The Name of Allah ***/
 
-import javax.imageio.ImageIO;
-import javax.sound.midi.Soundbank;
-import javax.sound.sampled.*;
-import javax.swing.*;
-import java.applet.AudioClip;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.List;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**
  * The window on which the rendering is performed.
@@ -34,6 +29,7 @@ public class GameFrame extends JFrame {
     public static final int GAME_WIDTH = 16 * 720 / 9;  // wide aspect ratio
 
     //uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
+    private BufferedImage image;
     private BufferedImage image1;
     private BufferedImage image2;
     private BufferedImage image3;
@@ -52,47 +48,56 @@ public class GameFrame extends JFrame {
     public int col;
     long start = System.currentTimeMillis();
     long startSec = start / 1000;
-    public  long renderCount = 0;
+    public long renderCount = 0;
     public long renderCountLimit = 0;
     int lastX = 120;
     int lastY = 120;
     boolean firstPrize = true;
-    boolean getPrize=false;
+    boolean getPrize = false;
     public BufferedImage lastPrize;
 
-    private Graphics2D g2d;
+
     private BufferStrategy bufferStrategy;
-    private ArrayList<Wall> walls;
+
+    private Graphics2D g2d;
     private ArrayList<Prize> prizes;
+    private ArrayList<Wall> walls;
     private ArrayList<Tank> tanks;
-    private boolean allWallsAdded = false;
 
-    public GameFrame(String title) throws AWTException, IOException {
 
+    public GameFrame(String title) {
         super(title);
-        setBackground(Color.white);
         setResizable(false);
+        setBackground(Color.white);
+
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setLayout(new BorderLayout());
+        try {
+            image = ImageIO.read(new File("tank_dark.png"));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
         walls = new ArrayList<>();
+        tanks = new ArrayList<>();
+        prizeLoc = new ArrayList<>();
+        prizes = new ArrayList<>();
+
+
+        tanks.add(new Tank("tank_dark.png", 30, 70, 0));
         Controller.walls = walls;
+        Controller.prizes = prizes;
+        Controller.getPrize = getPrize;
+        Controller.tanks = tanks;
         Controller.g2d = g2d;
         Controller.taken = taken;
-        prizeLoc = new ArrayList<>();
-        prizes=new ArrayList<>();
-        Controller.prizes=prizes;
-        Controller.getPrize=getPrize;
-        tanks=new ArrayList<>();
-        Controller.tanks=tanks;
-
 
         try {
-            image1 = ImageIO.read(new File("Tank_dark.png"));
-            image2 = ImageIO.read(new File("Tank_blue.png"));
-            image3 = ImageIO.read(new File("Tank_red.png"));
-            image4 = ImageIO.read(new File("Tank_green.png"));
-            image5 = ImageIO.read(new File("Tank_sand.png"));
-            background = ImageIO.read(new File("background.png"));
+            image1 = ImageIO.read(new File("tank_dark.png"));
+            image2 = ImageIO.read(new File("tank_blue.png"));
+            image3 = ImageIO.read(new File("tank_red.png"));
+            image4 = ImageIO.read(new File("tank_green.png"));
+            image5 = ImageIO.read(new File("tank_sand.png"));
+            //background = ImageIO.read(new File("background.png"));
             bullet2 = ImageIO.read(new File("2B.png"));
             bullet3 = ImageIO.read(new File("3B.png"));
             life = ImageIO.read(new File("life.png"));
@@ -102,6 +107,8 @@ public class GameFrame extends JFrame {
         } catch (IOException e) {
             System.out.println(e);
         }
+
+
     }
 
     /**
@@ -119,7 +126,7 @@ public class GameFrame extends JFrame {
     /**
      * Game rendering with triple-buffering using BufferStrategy.
      */
-    public void render(GameState state) throws IOException {
+    public void render(GameState state) {
         // Render single frame
         do {
             // The following loop ensures that the contents of the drawing buffer
@@ -148,9 +155,8 @@ public class GameFrame extends JFrame {
         } while (bufferStrategy.contentsLost());
     }
 
-
     public BufferedImage rotate(BufferedImage image, Double degrees) {
-        // Calculate the new size of the image based on the angle of rotation
+        // Calculate the new size of the image based on the angle of rotaion
         double radians = Math.toRadians(degrees);
         double sin = Math.abs(Math.sin(radians));
         double cos = Math.abs(Math.cos(radians));
@@ -168,18 +174,17 @@ public class GameFrame extends JFrame {
         at.setToRotation(radians, x + (image.getWidth() / 2), y + (image.getHeight() / 2));
         at.translate(x, y);
         g2d.setTransform(at);
-        g2d.drawImage(background, 0, 0, null);
-        // Paint the original image
+        // Paint the originl image
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
-        this.g2d = g2d;
         return rotate;
     }
 
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state) throws IOException {
+
+    private void doRendering(Graphics2D g2d, GameState state) {
         renderCount++;
         // Draw background
         g2d.setColor(Color.white);
@@ -193,12 +198,19 @@ public class GameFrame extends JFrame {
         g2d.setColor(Color.black);
         //g2d.drawImage(rotate(image1, state1.rotateAmount), state1.locX, state1.locY, null);
         setTanks(3, g2d, state);
-        setEnemy(g2d,state);
+        setEnemy(g2d, state);
         setName(g2d, "narges", "sara", "bardia");
         setMap(g2d, new File("map3.txt"));
         drawMap(g2d);
         setPrize(g2d);
 
+
+        state.fire(g2d);
+        if (tanks.size() > 0) {
+            tanks.get(0).x = state.locX;
+            tanks.get(0).y = state.locY;
+            //g2d.drawImage(rotate(tanks.get(0).icon, state.rotateAmountTank), tanks.get(0).x, tanks.get(0).y, null);
+        }
     }
 
     public void setMap(Graphics2D g2D, File map) {
@@ -225,7 +237,7 @@ public class GameFrame extends JFrame {
             g2d.drawImage(image2, 150, 750, null);
             player1 = "narges";
             g2d.drawString(player1, 160, 745);
-            g2d.drawString(String.valueOf(tanks.get(0).getHealth()),160,850);
+            g2d.drawString(String.valueOf(tanks.get(0).getHealth()), 160, 850);
         }
 //        if (player2 != null) {
 //            g2d.drawImage(image3, 450, 750, null);
@@ -240,20 +252,21 @@ public class GameFrame extends JFrame {
 //        g2d.drawImage(image5, 1050, 750, null);
     }
 
-    public void setEnemy(Graphics2D g2d,GameState state){
-        Tank tank = new Tank("enemy.png");
+    public void setEnemy(Graphics2D g2d, GameState state) {
+        Tank tank = new Tank("enemy.png",state.pcX,state.pcY,0);
         taken = tank.getIcon();
         tanks.add(tank);
-        g2d.drawImage(rotate(tank.getIcon(),state.rotateAmountPC),state.pcX,state.pcY, null);
+        g2d.drawImage(rotate(tank.getIcon(), state.rotateAmountPC), state.pcX, state.pcY, null);
 //        System.out.println(pcState.pcX+" "+pcState.pcY);
     }
+
     public void setTanks(int numOfPlayer, Graphics2D g2d, GameState state) {
         //g2d.drawImage(background, 0, 0, null);
         if (numOfPlayer > 0) {
-            Tank tank = new Tank("tank_blue_RS.png");
+            Tank tank = new Tank("tank_blue_RS.png",state.locX,state.locY,0);
             taken = tank.getIcon();
             tanks.add(tank);
-            g2d.drawImage(rotate(tank.getIcon(), state.rotateAmount), state.locX, state.locY, null);
+            g2d.drawImage(rotate(tank.getIcon(), state.rotateAmountTank), state.locX, state.locY, null);
 //            numOfPlayer--;
 //
 //            if (numOfPlayer > 0) {
@@ -325,7 +338,6 @@ public class GameFrame extends JFrame {
                         }
                     }
                 }
-                allWallsAdded = true;
                 currentX = 30;
                 if (lineCounter % 2 == 0) currentY += 5;
                 else currentY += 50;
@@ -339,15 +351,13 @@ public class GameFrame extends JFrame {
         }
     }
 
-
-
     /**
      * Draw prize randomly
      *
      * @param g2d graphic2D of game
      * @throws IOException
      */
-    public void setPrize(Graphics2D g2d)  {
+    public void setPrize(Graphics2D g2d) {
         int randomLoc = (int) (Math.random() * (realMapSize));
         int randomNum = (int) (Math.random() * (5));
 
@@ -355,7 +365,7 @@ public class GameFrame extends JFrame {
             randomLoc = randomLoc - 1;
         if (firstPrize) {
             g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
-            prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),15,15,bullet2.toString()));
+            prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 15, 15, bullet2.toString()));
             firstPrize = false;
             lastX = prizeLoc.get(randomLoc);
             lastY = prizeLoc.get(randomLoc + 1);
@@ -364,31 +374,35 @@ public class GameFrame extends JFrame {
         } else if (renderCount != renderCountLimit && !Controller.getPrize) {
             g2d.drawImage(lastPrize, lastX, lastY, null);
         } else {
-            Controller.getPrize=false;
-            if(randomNum==1) {
+            Controller.getPrize = false;
+            if (randomNum == 1) {
                 g2d.drawImage(shield, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,shield.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, shield.toString()));
                 lastPrize = shield;
-            } if(randomNum==0) {
+            }
+            if (randomNum == 0) {
                 g2d.drawImage(life, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,life.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, life.toString()));
                 lastPrize = life;
-            } if(randomNum==3) {
+            }
+            if (randomNum == 3) {
                 g2d.drawImage(bullet3, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,bullet3.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, bullet3.toString()));
                 lastPrize = bullet3;
-            } if(randomNum==2) {
+            }
+            if (randomNum == 2) {
                 g2d.drawImage(laser, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,laser.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, laser.toString()));
                 lastPrize = laser;
-            } if(randomNum==4) {
+            }
+            if (randomNum == 4) {
                 g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc),prizeLoc.get(randomLoc+1),10,10,bullet2.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, bullet2.toString()));
                 lastPrize = bullet2;
             }
             lastX = prizeLoc.get(randomLoc);
@@ -396,5 +410,7 @@ public class GameFrame extends JFrame {
             renderCountLimit = renderCount + 300;
         }
     }
+
+
 }
 
