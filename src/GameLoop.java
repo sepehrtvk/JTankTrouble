@@ -1,20 +1,18 @@
 /*** In The Name of Allah ***/
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.PrimitiveIterator;
 
 /**
  * A very simple structure for the main game loop.
  * THIS IS NOT PERFECT, but works for most situations.
- * Note that to make this work, none of the 2 methods 
- * in the while loop (update() and render()) should be 
- * long running! Both must execute very quickly, without 
+ * Note that to make this work, none of the 2 methods
+ * in the while loop (update() and render()) should be
+ * long running! Both must execute very quickly, without
  * any waiting and blocking!
- *
+ * <p>
  * Detailed discussion on different game loop design
  * patterns is available in the following link:
- *    http://gameprogrammingpatterns.com/game-loop.html
+ * http://gameprogrammingpatterns.com/game-loop.html
  *
  * @author Seyed Mohammad Ghaffarian
  */
@@ -32,6 +30,7 @@ public class GameLoop implements Runnable {
 	//private GameState state1;
 	//private GameState state2;
 	//private GameState pcState;
+
 
 	public GameLoop(GameFrame frame) {
 		canvas = frame;
@@ -59,7 +58,7 @@ public class GameLoop implements Runnable {
 	@Override
 	public void run() {
 		boolean gameOver = false;
-		while (!gameOver)  {
+		while (!gameOver) {
 			try {
 				long start = System.currentTimeMillis();
 				//
@@ -75,14 +74,9 @@ public class GameLoop implements Runnable {
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
 				if (delay > 0)
 					Thread.sleep(delay);
-			} catch (Exception ee) {
-				ee.printStackTrace();
+			} catch (InterruptedException ex) {
 			}
 		}
-		try {
-			canvas.render(state);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		canvas.render(state);
 	}
 }
