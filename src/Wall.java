@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Wall extends Rectangle {
+public class Wall {
 
     private int x, y, width, height;
     private Graphics2D g2d;
@@ -16,24 +16,19 @@ public class Wall extends Rectangle {
         g2d.fillRect(x, y, width, height);
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
-    }
-
-    @Override
-    public String toString() {
-        return x+" "+y;
     }
 }
