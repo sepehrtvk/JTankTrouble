@@ -83,13 +83,15 @@ public class GameFrame extends JFrame {
         prizes = new ArrayList<>();
 
 
-        tanks.add(new Tank("tank_dark.png", 30, 70, 0));
+//        tanks.add(new Tank("tank_dark.png", 30, 70, 0));
         Controller.walls = walls;
         Controller.prizes = prizes;
         Controller.getPrize = getPrize;
         Controller.tanks = tanks;
         Controller.g2d = g2d;
         Controller.taken = taken;
+        Controller.renderCount=renderCount;
+        Controller.renderCountLimit=renderCountLimit;
 
         try {
             image1 = ImageIO.read(new File("tank_dark.png"));
@@ -203,6 +205,9 @@ public class GameFrame extends JFrame {
         setMap(g2d, new File("map3.txt"));
         drawMap(g2d);
         setPrize(g2d);
+        for(Tank tank:tanks){
+            tank.applyPrize();
+        }
 
 
         state.fire(g2d);
@@ -365,7 +370,7 @@ public class GameFrame extends JFrame {
             randomLoc = randomLoc - 1;
         if (firstPrize) {
             g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
-            prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 15, 15, bullet2.toString()));
+            prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 15, 15,"bullet2"));
             firstPrize = false;
             lastX = prizeLoc.get(randomLoc);
             lastY = prizeLoc.get(randomLoc + 1);
@@ -378,31 +383,31 @@ public class GameFrame extends JFrame {
             if (randomNum == 1) {
                 g2d.drawImage(shield, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, shield.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, "shield"));
                 lastPrize = shield;
             }
             if (randomNum == 0) {
                 g2d.drawImage(life, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, life.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, "life"));
                 lastPrize = life;
             }
             if (randomNum == 3) {
                 g2d.drawImage(bullet3, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, bullet3.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, "bullet3"));
                 lastPrize = bullet3;
             }
             if (randomNum == 2) {
                 g2d.drawImage(laser, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, laser.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, "laser"));
                 lastPrize = laser;
             }
             if (randomNum == 4) {
                 g2d.drawImage(bullet2, prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), null);
                 prizes.clear();
-                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, bullet2.toString()));
+                prizes.add(new Prize(prizeLoc.get(randomLoc), prizeLoc.get(randomLoc + 1), 10, 10, "bullet2"));
                 lastPrize = bullet2;
             }
             lastX = prizeLoc.get(randomLoc);
