@@ -12,4 +12,7 @@ public class Controller {
     public static  ArrayList<Prize> prizes;
     public static ArrayList<Tank> tanks;
     public static boolean getPrize;
+    public static long renderCount;
+    public static long renderCountLimit;
+
 }
