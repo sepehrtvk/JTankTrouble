@@ -14,8 +14,13 @@ public class Tank {
     boolean alive;
     String prize;
     int Health;
+    boolean bulletEffect;
+    boolean laser;
+    boolean bullet2;
+    boolean bullet3;
 
     public Tank(String path, int x, int y, double rotateAmount) {
+        prize="empty";
         Health = 100;
         try {
             icon = ImageIO.read(new File(path));
@@ -59,5 +64,34 @@ public class Tank {
 
     public void setPrize(String prize) {
         this.prize = prize;
+    }
+
+    public void applyPrize() {
+        if(!prize.equals("empty")) {
+            if (prize.equals("life"))
+                Health += 10;
+//        if (Health > 100)
+//            Health = 100;
+            if (prize.equals("shield")) {
+                if (Controller.renderCountLimit - 50 == Controller.renderCount)
+                    bulletEffect = true;
+                else
+                    bulletEffect = false;
+            }
+            if (prize.equals("bullet2")) {
+                if (!bullet2)
+                    bullet2 = true;
+            }
+            if (prize.equals("bullet3")) {
+                if (!bullet3)
+                    bullet3 = true;
+            }
+            if (prize.equals("laser")) {
+                if (Controller.renderCountLimit - 410 == Controller.renderCount)
+                    laser = false;
+                else
+                    laser = true;
+            }
+        }
     }
 }
