@@ -18,10 +18,14 @@ public class Tank {
     boolean laser;
     boolean bullet2;
     boolean bullet3;
+    int shieldCounter;
+    int laserCounter;
 
     public Tank(String path, int x, int y, double rotateAmount) {
-        prize="empty";
-        Health = 100;
+        prize = "empty";
+        Health = Controller.tankHealth;
+        shieldCounter = 0;
+        laserCounter = 0;
         try {
             icon = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -55,7 +59,8 @@ public class Tank {
     }
 
     public void setHealth(int healthDamage) {
-        Health = Health - healthDamage;
+        Health -=  healthDamage;
+        if (Health <= 0) Health = 0;
     }
 
     public String getPrize() {
@@ -67,30 +72,42 @@ public class Tank {
     }
 
     public void applyPrize() {
-        if(!prize.equals("empty")) {
-            if (prize.equals("life"))
+        if (!prize.equals("empty")) {
+            if (prize.equals("life")) {
                 Health += 10;
-//        if (Health > 100)
-//            Health = 100;
+            }
+            if (Health > 100) {
+                Health = 100;
+            }
             if (prize.equals("shield")) {
-                if (Controller.renderCountLimit - 50 == Controller.renderCount)
+                if (shieldCounter < 150) {
                     bulletEffect = true;
-                else
+                    shieldCounter++;
+                } else {
+                    shieldCounter = 160;
                     bulletEffect = false;
+                }
             }
             if (prize.equals("bullet2")) {
-                if (!bullet2)
-                    bullet2 = true;
+                bullet2 = true;
+                Controller.bulletSpeed = 6;
             }
             if (prize.equals("bullet3")) {
-                if (!bullet3)
-                    bullet3 = true;
+                bullet3 = true;
+                Controller.bulletSpeed = 9;
             }
             if (prize.equals("laser")) {
-                if (Controller.renderCountLimit - 410 == Controller.renderCount)
-                    laser = false;
-                else
+                Controller.laser = laser;
+                if (laserCounter < 120) {
                     laser = true;
+                    Controller.laser = true;
+                    Controller.bulletSpeed = 9;
+                    laserCounter++;
+                } else {
+                    laserCounter = 130;
+                    Controller.laser = false;
+                    Controller.bulletSpeed = 4;
+                }
             }
         }
     }
