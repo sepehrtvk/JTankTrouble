@@ -16,22 +16,25 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class holds the state of game and all of its elements.
  * This class also handles user inputs, which affect the game state.
  *
  * @author Seyed Mohammad Ghaffarian
+ * @version 2.1
  */
 public class GameState {
-
+    //keep location of tank
     public int locX, locY, diam;
+    //keep location of enemy
     public int pcX, pcY;
     public boolean gameOver, keyM;
-
     public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
     private boolean mousePress;
     private int mouseX, mouseY;
+    private int bulletTime = 0;
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
     public double rotateAmountTank;
@@ -43,24 +46,24 @@ public class GameState {
     private boolean right;
     private boolean up;
     private boolean down;
-    boolean PermissionUp = true;
-    boolean PermissionDown = true;
-
-
     public double rotateAmountBullet;
-    private int bulletTime = 0;
-    private int tankTime = 0;
-
-
     public ArrayList<Bullet> bullets;
+    //count number of enemy moves
+    public int move = 0;
 
 
+    /**
+     * create a new Game State with given number which is used for tank type
+     *
+     * @param num of tank
+     */
     public GameState(int num) {
-        locX = 100;
+        //set default value
+        locX = 40;
         locY = 100;
         diam = 32;
-        pcX = 40;
-        pcY = 100;
+        pcX = 300;
+        pcY = 400;
         rotateAmountTank = 0;
         rotateAmountBullet = 0;
         gameOver = false;
@@ -101,6 +104,7 @@ public class GameState {
     public Rectangle getBounds(int locX, int locY) {
         return new Rectangle(locX, locY, 25, 25);
     }
+
     public Wall verticalWallCollision() {
         for (Wall wall : Controller.walls) {
             if (wall.getWidth() == 5 && wall.getHeight() == 50) {
@@ -176,90 +180,225 @@ public class GameState {
         return true;
     }
 
-    public void pcUpdate() {
-
+    public Wall verticalWallCollisionPC() {
         for (Wall wall : Controller.walls) {
-
             if (wall.getWidth() == 5 && wall.getHeight() == 50) {
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() < pcX) {
-                    left = false;
-                    System.out.println("3");
-                    break;
+                if ((getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
+                    return wall;
                 }
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() > pcX) {
-                    right = false;
-                    System.out.println("4");
-                    break;
-                }
-
             }
+        }
+        return null;
+    }
+
+    public Wall horizontalWallCollisionPC() {
+        for (Wall wall : Controller.walls) {
             if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() > pcY) {
-                    down = false;
-                    System.out.println("2");
-                    break;
+                if ((getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
+                    return wall;
                 }
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() < pcY) {
-                    System.out.println("1");
-                    up = false;
-                    break;
-                }
-
             }
-            if (!up && !down && !left && !right) {
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() < pcX) {
-                    left = false;
-                    System.out.println("33");
-                } else {
-                    left = true;
-
-                }
-                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() > pcX) {
-                    right = false;
-                    System.out.println("44");
-                } else
-                    right = true;
+        }
+        return null;
+    }
 
 
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
+    public boolean isMoveAllowedPC() {
 
-                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() > pcY) {
-                        down = false;
-                        System.out.println("22");
-                        break;
-                    } else
-                        down = true;
-                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() < pcY) {
-                        System.out.println("11");
-                        up = false;
-                        break;
-                    } else
-                        up = true;
+        if (verticalWallCollisionPC() != null) {
+            if (verticalWallCollisionPC().getX() > pcX) {
+                if (rotateAmountTank == 0) {
+                    return false;
+                } else return true;
+            }
+            if (verticalWallCollisionPC().getX() < pcX) {
+                if (rotateAmountTank == 180) {
+                    return false;
+                } else return true;
+            }
+        }
 
-                }
+        if (horizontalWallCollisionPC() != null) {
+            if (horizontalWallCollisionPC().getY() > pcY) {
+                if (rotateAmountTank == 90) {
+                    return false;
+                } else return true;
+            }
+            if (horizontalWallCollisionPC().getY() < pcY) {
+                if (rotateAmountTank == 270) {
+                    return false;
+                } else return true;
             }
 
         }
-        if (up) {
-            pcY -= 2;
-            rotateAmountPC = 270;
-        } else if (down) {
-            pcY += 2;
-            rotateAmountPC = 90;
-        } else if (right) {
-            pcX -= 2;
-            rotateAmountPC = 180;
-        } else if (left) {
-            pcX += 2;
-            rotateAmountPC = 0;
-        }
+        return true;
+    }
 
-//        pcX = Math.max(pcX, 40);
-//        pcX = Math.min(pcX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
+    public void pcUpdate() {
+        System.out.println(isMoveAllowedPC());
+        if (move > 0 && move < 200) {
+            if (move < 100) {
+                rotateAmountPC = 90;
+                if (isMoveAllowedPC())
+                    pcY += 2;
+                else {
+                    rotateAmountPC = 270;
+                        pcY -= 2;
+                }
+            } else {
+                rotateAmountPC = 0;
+                if (isMoveAllowedPC())
+                    pcX += 2;
+                else {
+                    rotateAmountPC = 180;
+                        pcX -= 2;
+                }
+            }
+        }
+        if (move >= 200 && move < 500) {
+            if (move <= 250) {
+                rotateAmountPC = 180;
+                if (isMoveAllowedPC())
+                    pcX -= 2;
+                else {
+                    rotateAmountPC = 0;
+                        pcX += 2;
+                }
+            } else {
+                rotateAmountPC = 270;
+                if (isMoveAllowedPC())
+                    pcY -= 2;
+                else {
+                    rotateAmountPC = 90;
+                        pcY += 2;
+                }
+            }
+        }
+        if (move >= 500 && move < 800) {
+            if (move < 650) {
+                rotateAmountPC = 270;
+                if (isMoveAllowedPC())
+                    pcY -= 2;
+                else {
+                    rotateAmountPC = 90;
+                        pcY += 2;
+                }
+            } else {
+                rotateAmountPC = 180;
+                if (isMoveAllowedPC())
+                    pcX -= 2;
+                else {
+                    rotateAmountPC = 0;
+                        pcX += 2;
+                }
+            }
+        }
+        if (move >= 800 && move < 1200) {
+            if (move < 950) {
+                rotateAmountPC = 0;
+                if (isMoveAllowedPC())
+                    pcX += 2;
+                else {
+                    rotateAmountPC = 180;
+                        pcX -= 2;
+                }
+            } else {
+                rotateAmountPC = 90;
+                if (isMoveAllowedPC())
+                    pcY += 2;
+                else {
+                    rotateAmountPC = 270;
+                        pcY -= 2;
+                }
+            }
+        }
+        move++;
+        if (move == 1200)
+            move = 0;
+
+
+//        for (Wall wall : Controller.walls) {
+//            if (wall.getWidth() == 5 && wall.getHeight() == 50 || wall.getWidth() == 5 && wall.getHeight() == 5) {
+//                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() < pcX) {
+//                    left = false;
+//                    System.out.println("3");
+//                    break;
+//                }
+//                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() > pcX) {
+//                    right = false;
+//                    System.out.println("4");
+//                    break;
+//                }
+//            }
+//            if (wall.getWidth() == 50 && wall.getHeight() == 5 || wall.getWidth() == 5 && wall.getHeight() == 5) {
+//                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() > pcY) {
+//                    down = false;
+//                    System.out.println("2");
+//                    break;
+//                }
+//                if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() < pcY ) {
+//                    System.out.println("1");
+//                    up = false;
+//                    break;
+//                }
+//            }
 //
-//        pcY = Math.max(pcY, 70);
-//        pcY = Math.min(pcY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
+//            if (!up && !down && !left && !right) {
+//                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
+//                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() < pcX) {
+//                        left = false;
+//                        System.out.println("33");
+//                    } else {
+//                        left = true;
+//                        System.out.println("3333");
+//
+//                    }
+//                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getX() > pcX) {
+//                        right = false;
+//                        System.out.println("44");
+//                    } else {
+//                        right = true;
+//                        System.out.println("4444");
+//                    }
+//                }
+//                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
+//                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() > pcY) {
+//                        down = false;
+//                        System.out.println("22");
+//                        break;
+//                    } else {
+//                        down = true;
+//                        System.out.println("2222");
+//                    }
+//                    if (getBounds(pcX, pcY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), (int) wall.getWidth(), (int) wall.getHeight())) && wall.getY() < pcY) {
+//                        System.out.println("11");
+//                        up = false;
+//                        break;
+//                    } else {
+//                        up = true;
+//                        System.out.println("1111");
+//                    }
+//                }
+//            }
+//        }
+//        if (up) {
+//            pcY -= 2;
+//            rotateAmountPC = 270;
+//        } else if (down) {
+//            pcY += 2;
+//            rotateAmountPC = 90;
+//        }  else if (left) {
+//            pcX -= 2;
+//            rotateAmountPC = 180;
+//        }  else if (right) {
+//            pcX += 2;
+//            rotateAmountPC = 0;
+//        }
+        pcX = Math.max(pcX, 40);
+        pcX = Math.min(pcX, 20 + (((Controller.col - 1) / 2) * 50) + (((Controller.col - 1) / 2) + 1) * 5 - 25);
+
+        pcY = Math.max(pcY, 70);
+        pcY = Math.min(pcY, 50 + ((Controller.row - 1) / 2) * 50 + (((Controller.row - 1) / 2) + 1) * 5 - 25);
     }
 
 
@@ -275,74 +414,23 @@ public class GameState {
         if (keyUP) {
             calculateBullet("x");
             calculateBullet("y");
-
-            PermissionUp = true;
-            for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        //&&
-                        //                            ((rotateAmount == 0 && locX < wall.getX()) || ((rotateAmount == 180 || rotateAmount == -180) && locX > wall.getX()))
-                        PermissionUp = false;
-                        break;
-                    }
-                }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        // &&
-                        //                            (((rotateAmount == +90 || rotateAmount == -270) && locY < wall.getY()) || (((rotateAmount == -90 || rotateAmount == -270) && locY > wall.getY())))
-                        PermissionUp = false;
-                        break;
-                    }
-                }
-            }
-            if (PermissionUp)
-                move(+5);
-            for (Wall wall : Controller.walls)
-                if (!PermissionDown && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
-                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
-                    move(+5);
-                    break;
-                }
-
+            move(+5);
 
         }
         if (keyDOWN) {
             calculateBullet("x");
             calculateBullet("y");
-            PermissionDown = true;
-            for (Wall wall : Controller.walls) {
-                if (wall.getWidth() == 5 && wall.getHeight() == 50) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50)))) {
-                        //&&
-                        //                            ((((rotateAmount == 0) || locX >= wall.getX())) || (((rotateAmount == -180 || rotateAmount == 180) && locX <= wall.getX())))
-                        PermissionDown = false;
-                        break;
-                    }
-                }
-                if (wall.getWidth() == 50 && wall.getHeight() == 5) {
-                    if ((getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5)))) {
-                        // &&
-                        //                            (((rotateAmount == -90 || rotateAmount == 270) && locY<wall.getY()))|| (((rotateAmount==90||rotateAmount==-270)&& locY>wall.getY()))
-                        PermissionDown = false;
-                        break;
-                    }
-                }
-            }
-            if (PermissionDown)
-                move(-5);
-            for (Wall wall : Controller.walls)
-                if (!PermissionUp && (!(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 50, 5))) ||
-                        !(getBounds(locX, locY).intersects(new Rectangle((int) wall.getX(), (int) wall.getY(), 5, 50))))) {
-                    move(-5);
-                    break;
-                }
-
-
+            move(-5);
         }
+
         for (Prize prize : Controller.prizes) {
-            if ((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))) {
+            if ((getBounds(locX, locY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight()))) ){
                 Controller.getPrize = true;
                 Controller.tanks.get(0).setPrize(prize.getName());
+            }
+            if((getBounds(pcX, pcY).intersects(new Rectangle((int) prize.getX(), (int) prize.getY(), prize.getWidth(), prize.getHeight())))){
+                Controller.getPrize = true;
+                Controller.tanks.get(1).setPrize(prize.getName());
             }
         }
 
@@ -365,14 +453,17 @@ public class GameState {
         if (keyM && Controller.tanks.size() > 0) {
             if (rotateAmountBullet >= 360 || rotateAmountBullet <= -360) rotateAmountBullet = 0;
 
-            Bullet bullet = new Bullet(calculateBullet("x"), calculateBullet("y"), rotateAmountBullet, 30);
+            Bullet bullet = new Bullet(calculateBullet("x"), calculateBullet("y"), rotateAmountBullet, Controller.bulletDamage);
             bullets.add(bullet);
             bulletCollision(bullets.get(0));
 
-            shotBullet(8, bullets.get(0));
+            if (Controller.bulletSpeed == 0) Controller.bulletSpeed = 4;
+            shotBullet(Controller.bulletSpeed, bullets.get(0));
+            if (Controller.laser) g2d.setColor(Color.red);
+            else g2d.setColor(Color.black);
             g2d.fillOval(bullets.get(0).x, bullets.get(0).y, 7, 7);
 
-            if (bullets.size() > 5 && Controller.tanks.size() > 0)
+            if (bullets.size() > 7 && Controller.tanks.size() > 0)
                 checkTankDestroyed(Controller.tanks.get(0), bullets.get(0));
 
             if (bulletTime > 60) {
@@ -386,7 +477,6 @@ public class GameState {
 
             }
             bulletTime++;
-
         }
     }
 
@@ -543,15 +633,18 @@ public class GameState {
     public void checkTankDestroyed(Tank tankToCheck, Bullet bullet) {
         Rectangle rectangle = new Rectangle(tankToCheck.getX(), tankToCheck.getY(), 25, 25);
         Ellipse2D ellipse2D = new Ellipse2D.Double(bullet.x, bullet.y, 7, 7);
-        if (ellipse2D.intersects(rectangle)) {
+        if (ellipse2D.intersects(rectangle) && !tankToCheck.bulletEffect) {
             new AudioPlayer("sound effects/enemydestroyed.wav", 0);
-
-            Controller.tanks.remove(tankToCheck);
-            tankToCheck.alive = false;
+            tankToCheck.setHealth(Controller.bulletDamage);
+            //Controller.tanks.remove(tankToCheck);
             bullet.alive = false;
-            rotateAmountTank = 0;
             bulletTime = 61;
+            System.out.println(tankToCheck.getHealth());
+            if (tankToCheck.getHealth() <= 0) {
+                tankToCheck.alive = false;
+                rotateAmountTank = 0;
 
+            }
         }
     }
 
