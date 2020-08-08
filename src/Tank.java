@@ -137,11 +137,11 @@ public class Tank {
                 prize="empty";
             }
             if (prize.equals("shield")) {
-                if (shieldCounter < 150) {
+                if (shieldCounter < 450) {
                     bulletEffect = true;
                     shieldCounter++;
                 } else {
-                    shieldCounter = 160;
+                    shieldCounter = 0;
                     bulletEffect = false;
                     prize="empty";
                 }
@@ -156,7 +156,7 @@ public class Tank {
             }
             if (prize.equals("laser")) {
                 Controller.laser = laser;
-                if (laserCounter < 120) {
+                if (laserCounter < 90) {
                     laser = true;
                     Controller.laser = true;
                     Controller.bulletSpeed = 9;
