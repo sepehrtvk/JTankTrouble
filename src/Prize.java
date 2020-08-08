@@ -4,20 +4,34 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * keep prize info
+ * @author narges salehi & sepehr tavakoli
+ * @version 1.1
+ * @since July 21 2020
+ */
 public class Prize {
+    //x of prize
     int x;
+    //y of prize
     int y;
+    //width of prize
     int width;
-
-    public boolean CheckExpiration() {
-        return checkExpiration;
-    }
-
+    //height of prize
     int height;
+    //name of prize
     String name;
-    boolean checkExpiration=false;
 
+    /**
+     * creat a new prize
+     * @param x of prize
+     * @param y of prize
+     * @param width  pof prize
+     * @param height of prize
+     * @param name of prize
+     */
     public Prize(int x, int y, int width, int height, String name) {
+        //set given value to constructor as default value
         this.x = x;
         this.y = y;
         this.width = width;
@@ -25,60 +39,45 @@ public class Prize {
         this.name = name;
     }
 
+    /**
+     *
+     * @return x of prize
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @return y of tank
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     *
+     * @return width of prize
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     *
+     * @return name of prize
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return height of prize
+     */
     public int getHeight() {
         return height;
     }
-    //    public static  void setPrize(GameFrame gameFrame, Graphics2D g2d){
-//        int randomLoc = (int) (Math.random() * (gameFrame.realMapSize));
-//        int randomNum = (int) (Math.random() * (5));
-//
-//        if (randomLoc % 2 != 0)
-//            randomLoc = randomLoc - 1;
-//        if (gameFrame.firstPrize) {
-//            g2d.drawImage(gameFrame.bullet2, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//            gameFrame.firstPrize = false;
-//            gameFrame.lastX = gameFrame.prizeLoc.get(randomLoc);
-//            gameFrame.lastY = gameFrame.prizeLoc.get(randomLoc + 1);
-//            gameFrame.renderCountLimit = gameFrame.renderCount + 90;
-//            gameFrame.lastPrize = gameFrame.bullet2;
-//        } else if (gameFrame.renderCount != gameFrame.renderCountLimit) {
-//            g2d.drawImage(gameFrame.lastPrize, gameFrame.lastX, gameFrame.lastY, null);
-//        } else {
-//            if(randomNum==1) {
-//                g2d.drawImage(gameFrame.shield, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//                gameFrame.lastPrize = gameFrame.shield;
-//            } if(randomNum==0) {
-//                g2d.drawImage(gameFrame.life, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//                gameFrame.lastPrize = gameFrame.life;
-//            } if(randomNum==3) {
-//                g2d.drawImage(gameFrame.bullet3, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//                gameFrame.lastPrize = gameFrame.bullet3;
-//            } if(randomNum==2) {
-//                g2d.drawImage(gameFrame.laser, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//                gameFrame.lastPrize = gameFrame.laser;
-//            } if(randomNum==4) {
-//                g2d.drawImage(gameFrame.bullet2, gameFrame.prizeLoc.get(randomLoc), gameFrame.prizeLoc.get(randomLoc + 1), null);
-//                gameFrame.lastPrize = gameFrame.bullet2;
-//            }
-//            gameFrame.lastX = gameFrame.prizeLoc.get(randomLoc);
-//            gameFrame.lastY = gameFrame.prizeLoc.get(randomLoc + 1);
-//            gameFrame.renderCountLimit = gameFrame.renderCount + 90;
-//        }
-//    }
+
 }
+
