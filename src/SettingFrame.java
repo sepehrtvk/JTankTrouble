@@ -16,6 +16,9 @@ public class SettingFrame extends JFrame {
     private JLabel tankLabel;
     private JLabel tankPhoto;
     private ImageIcon tank;
+    private JSlider tankHealthSlider;
+    private JSlider shotDamageSlider;
+    private JSlider wallsHealthSlider;
 
 
     public SettingFrame() {
@@ -69,7 +72,6 @@ public class SettingFrame extends JFrame {
 
         add(userInformationPanel);
 
-
     }
 
     public void textAndLabel(String pngFile, String textField) {
@@ -100,9 +102,12 @@ public class SettingFrame extends JFrame {
         gameDetailsPanel.setLayout(new GridLayout(3, 2));
         settingPanel.setBackground(Color.darkGray);
         settingPanel.setLayout(new BorderLayout());
-        sliderAndIcon("pictures/tankHealth.png", 40);
-        sliderAndIcon("pictures/shotDamage.png", 80);
-        sliderAndIcon("pictures/DestructibleWall.png", 20);
+        tankHealthSlider = new JSlider(10, 100, 40);
+        shotDamageSlider = new JSlider(10, 100, 80);
+        wallsHealthSlider = new JSlider(10, 100, 20);
+        sliderAndIcon(tankHealthSlider, "pictures/tankHealth.png");
+        sliderAndIcon(shotDamageSlider, "pictures/shotDamage.png");
+        sliderAndIcon(wallsHealthSlider, "pictures/DestructibleWall.png");
         initServerPanel();
         add(settingPanel);
         settingPanel.add(gameDetailsPanel, BorderLayout.NORTH);
@@ -118,6 +123,9 @@ public class SettingFrame extends JFrame {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Controller.bulletDamage=shotDamageSlider.getValue();
+                Controller.tankHealth=tankHealthSlider.getValue();
+                Controller.wallsHealth=wallsHealthSlider.getValue();
                 dispose();
             }
         });
@@ -125,9 +133,8 @@ public class SettingFrame extends JFrame {
         serverPanel.add(okButton, BorderLayout.EAST);
     }
 
-    public void sliderAndIcon(String iconName, int value) {
+    public void sliderAndIcon(JSlider slider, String iconName) {
 
-        JSlider slider = new JSlider(10, 100, value);
         slider.setMajorTickSpacing(10);
         slider.setBackground(Color.darkGray);
         slider.setBorder(new LineBorder(Color.GRAY, 2));
@@ -143,4 +150,6 @@ public class SettingFrame extends JFrame {
         gameDetailsPanel.add(slider);
 
     }
+
+
 }
