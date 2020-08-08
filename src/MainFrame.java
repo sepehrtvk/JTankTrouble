@@ -106,7 +106,8 @@ public class MainFrame extends JFrame {
 
         }
     }
-    class OfflineModeAction implements ActionListener{
+
+    class OfflineModeAction implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -114,7 +115,7 @@ public class MainFrame extends JFrame {
             JFrame dialogFrame = new JFrame("Change settings ");
             dialogFrame.setResizable(false);
             dialogFrame.setLayout(new FlowLayout());
-            dialogFrame.setBounds(700,450,300,85);
+            dialogFrame.setBounds(700, 450, 300, 85);
             JLabel settingLabel = new JLabel("Do you want to play with current setting ?");
             dialogFrame.add(settingLabel);
 
@@ -142,8 +143,10 @@ public class MainFrame extends JFrame {
             dialogFrame.setVisible(true);
 
         }
+
     }
-    class OnlineModeAction implements ActionListener{
+
+    class OnlineModeAction implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
