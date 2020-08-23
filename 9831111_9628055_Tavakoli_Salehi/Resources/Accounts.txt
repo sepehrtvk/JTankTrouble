@@ -1,0 +1,5 @@
+abcd 1234 true 0 0 0 0 0 
+sepehr 12345 true 4 1 0 0 0
+narges narges true 2174 20 6 0 0
+mamad 12345 true 208 1 0 0 0
+bardia 1234 true 91 4 1 0 0
